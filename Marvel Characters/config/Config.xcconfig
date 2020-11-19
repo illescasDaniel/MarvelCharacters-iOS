@@ -1,0 +1,15 @@
+//
+//  Config.xcconfig
+//  Marvel Characters
+//
+//  Created by Daniel Illescas Romero on 19/11/20.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+#include "Keys.xcconfig"
+
+MARVEL_PUBLIC_API_KEY_CONFIG = "$(MARVEL_PUBLIC_API_KEY)"
+MARVEL_PRIVATE_API_KEY_CONFIG = "$(MARVEL_PRIVATE_API_KEY)"
+GCC_PREPROCESSOR_DEFINITIONS = DEBUG=1 $(inherited) MARVEL_PUBLIC_API_KEY=$(MARVEL_PUBLIC_API_KEY_CONFIG) MARVEL_PRIVATE_API_KEY=$(MARVEL_PRIVATE_API_KEY_CONFIG)
