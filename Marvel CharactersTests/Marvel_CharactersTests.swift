@@ -12,6 +12,7 @@ import Combine
 class Marvel_CharactersTests: XCTestCase {
 	
 	let dataSource = MarvelCharactersDataSource()
+	let repository: MarvelCharactersRepository = MarvelCharactersRepositoryImplementation()
 	var cancellables: [AnyCancellable] = []
 
     override func setUpWithError() throws {
@@ -29,8 +30,9 @@ class Marvel_CharactersTests: XCTestCase {
 			case .failure(let error):
 				dump(error)
 			case .finished:
-				testCharacterByIDEndpointExpectation.fulfill()
+				print("testCharacterByIDEndpoint - no issues")
 			}
+			testCharacterByIDEndpointExpectation.fulfill()
 		}, receiveValue: { (value) in
 			print(value)
 		}))
@@ -49,8 +51,48 @@ class Marvel_CharactersTests: XCTestCase {
 			case .failure(let error):
 				dump(error)
 			case .finished:
-				testCharactersEndpointExpectation.fulfill()
+				print("testCharactersEndpoint - no issues")
 			}
+			testCharactersEndpointExpectation.fulfill()
+		}, receiveValue: { (value) in
+			print(value)
+		}))
+		self.wait(for: [testCharactersEndpointExpectation], timeout: 60)
+	}
+	
+	//
+	
+	func testCharacterByIDEndpointRepository() {
+		let testCharacterByIDEndpointExpectation = expectation(description: "testCharacterByIDEndpointRepository")
+		self.cancellables.append(self.repository.character(id: 1010338).receive(on: DispatchQueue.main).sink(receiveCompletion: { (completion) in
+			switch completion {
+			case .failure(let error):
+				dump(error)
+			case .finished:
+				print("testCharacterByIDEndpointRepository - no issues")
+			}
+			testCharacterByIDEndpointExpectation.fulfill()
+		}, receiveValue: { (value) in
+			print(value)
+		}))
+		self.wait(for: [testCharacterByIDEndpointExpectation], timeout: 60)
+	}
+	
+	func testCharactersEndpointRepository() {
+		let testCharactersEndpointExpectation = expectation(description: "testCharactersEndpointRepository")
+		let parameters = MarvelCharacterParametersBuilder()
+			//.nameStartsWith(prefix: "Spider")
+			//.page(0, limit: 7)
+			.build()
+
+		self.cancellables.append(self.repository.characters(parameters: parameters).receive(on: DispatchQueue.main).sink(receiveCompletion: { (completion) in
+			switch completion {
+			case .failure(let error):
+				dump(error)
+			case .finished:
+				print("testCharactersEndpointRepository - no issues")
+			}
+			testCharactersEndpointExpectation.fulfill()
 		}, receiveValue: { (value) in
 			print(value)
 		}))
