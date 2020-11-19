@@ -8,6 +8,6 @@
 import Foundation
 
 struct MarvelAPIConfig  {
-	static let publicApiKey = String(cString: MarvelPublicAPIKey)
-	static let privateApiKey = String(cString: MarvelPrivateAPIKey)
+	static let publicApiKey = Keys.marvelPublicApiKey()
+	static let privateApiKey = Keys.marvelPrivateApiKey()
 }

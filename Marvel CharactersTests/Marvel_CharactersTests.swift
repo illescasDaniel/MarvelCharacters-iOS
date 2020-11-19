@@ -29,6 +29,7 @@ class Marvel_CharactersTests: XCTestCase {
 			switch completion {
 			case .failure(let error):
 				dump(error)
+				XCTFail(error.localizedDescription)
 			case .finished:
 				print("testCharacterByIDEndpoint - no issues")
 			}
@@ -50,6 +51,7 @@ class Marvel_CharactersTests: XCTestCase {
 			switch completion {
 			case .failure(let error):
 				dump(error)
+				XCTFail(error.localizedDescription)
 			case .finished:
 				print("testCharactersEndpoint - no issues")
 			}
@@ -68,6 +70,7 @@ class Marvel_CharactersTests: XCTestCase {
 			switch completion {
 			case .failure(let error):
 				dump(error)
+				XCTFail(error.localizedDescription)
 			case .finished:
 				print("testCharacterByIDEndpointRepository - no issues")
 			}
@@ -89,6 +92,7 @@ class Marvel_CharactersTests: XCTestCase {
 			switch completion {
 			case .failure(let error):
 				dump(error)
+				XCTFail(error.localizedDescription)
 			case .finished:
 				print("testCharactersEndpointRepository - no issues")
 			}
