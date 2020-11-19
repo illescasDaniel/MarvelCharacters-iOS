@@ -115,6 +115,7 @@
 		6561ABB82566DB42008E74EB /* MarvelCharacterModelMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelCharacterModelMapper.swift; sourceTree = "<group>"; };
 		6561ABC12566DCD7008E74EB /* MarvelCharactersRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelCharactersRepository.swift; sourceTree = "<group>"; };
 		6561ABC92566DCE2008E74EB /* MarvelCharactersRepositoryImplementation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelCharactersRepositoryImplementation.swift; sourceTree = "<group>"; };
+		6561ABCE2566E555008E74EB /* Keys.example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Keys.example.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -325,6 +326,7 @@
 			isa = PBXGroup;
 			children = (
 				6561AB7F2566CEB2008E74EB /* Keys.xcconfig */,
+				6561ABCE2566E555008E74EB /* Keys.example.xcconfig */,
 				6561AB6A2566C7BA008E74EB /* Config.xcconfig */,
 				6561AB872566CF4B008E74EB /* Marvel Characters-Bridging-Header.h */,
 			);
