@@ -10,7 +10,15 @@ import UIKit
 extension CharactersTableViewController: CharactersListDataSourceDelegate {
 	
 	func reloadList() {
-		
+		self.tableView.reloadData()
+	}
+	
+	func reloadRow(index: Int) {
+		self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+	}
+	
+	func reloadRows(indices: [Int]) {
+		self.tableView.reloadRows(at: indices.map({ IndexPath(row: $0, section: 0) }), with: .fade)
 	}
 	
 	func errorLoading(_ error: Error) {

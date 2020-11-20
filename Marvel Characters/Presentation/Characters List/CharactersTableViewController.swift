@@ -9,7 +9,7 @@ import UIKit
 
 class CharactersTableViewController: UITableViewController {
 	
-	private let dataSource = CharactersListDataSource(charactersRepository: MarvelCharactersRepositoryImplementation())
+	let dataSource = CharactersListDataSource(charactersRepository: MarvelCharactersRepositoryImplementation())
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -27,6 +27,8 @@ class CharactersTableViewController: UITableViewController {
 		navigationController?.navigationBar.prefersLargeTitles = true
 		
 		tableView.register(UINib(nibName: "CharacterTableViewCell", bundle: .main), forCellReuseIdentifier: "characterCell")
+		
+		dataSource.loadData()
 		
 		let searchController = CharactersSearchTableViewController(nibName: "CharactersSearchTableViewController", bundle: .main)
 		navigationItem.searchController = UISearchController(searchResultsController: searchController)
@@ -48,46 +50,25 @@ class CharactersTableViewController: UITableViewController {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "characterCell", for: indexPath) as! CharacterTableViewCell
 		
 		let character = dataSource.characters[indexPath.row]
-		cell.textLabel?.text = character.name
-		cell.detailTextLabel?.text = String(character.description.prefix(100))
+		cell.characterNameLabel.text = character.name
+		
+		if character.description.isEmpty {
+			cell.characterDescriptionLabel.text = nil
+			cell.characterDescriptionLabel.isHidden = true
+		} else {
+			cell.characterDescriptionLabel.isHidden = false
+			cell.characterDescriptionLabel.text = self.view.frame.width > 1200 ? String(character.description.prefix(500)) : String(character.description.prefix(300))
+		}
+		
+		if let thumbnail = dataSource.thumbnail(forIndex: indexPath.row) {
+			cell.characterThumbnailImageView.image = thumbnail
+		} else {
+			cell.characterThumbnailImageView.image = UIImage(named: "Placeholder")?.resizeImage(66, opaque: false, contentMode: .scaleAspectFit)
+			dataSource.downloadThumbnail(character.thumbnail, forIndex: indexPath.row)
+		}
 		
 		return cell
 	}
-	
-	/*
-	// Override to support conditional editing of the table view.
-	override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-	// Return false if you do not want the specified item to be editable.
-	return true
-	}
-	*/
-	
-	/*
-	// Override to support editing the table view.
-	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-	if editingStyle == .delete {
-	// Delete the row from the data source
-	tableView.deleteRows(at: [indexPath], with: .fade)
-	} else if editingStyle == .insert {
-	// Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-	}
-	}
-	*/
-	
-	/*
-	// Override to support rearranging the table view.
-	override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-	
-	}
-	*/
-	
-	/*
-	// Override to support conditional rearranging of the table view.
-	override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-	// Return false if you do not want the item to be re-orderable.
-	return true
-	}
-	*/
 	
 	/*
 	// MARK: - Navigation
