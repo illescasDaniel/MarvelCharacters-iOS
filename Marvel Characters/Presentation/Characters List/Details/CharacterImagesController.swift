@@ -12,7 +12,7 @@ import Combine
 class CharacterImagesController {
 
 	private var images: [Int: UIImage] = [:]
-	//private var imageForThumbnailURL: [String: UIImage]
+	private var cachedImageForThumbnailURL: [String: UIImage] = [:]
 	private let charactersRepository: MarvelCharactersRepository = MarvelCharactersRepositoryImplementation()
 	private var cancellables: [Int: AnyCancellable] = [:]
 	
@@ -24,12 +24,20 @@ class CharacterImagesController {
 			return
 		}
 		
+		if let cachedImage = self.cachedImageForThumbnailURL[thumbnailURL] {
+			self.images[index] = cachedImage
+			self.downloadedImagesIndexStream.send(index)
+			return
+		}
+		
 		cancellables[index] = charactersRepository.downloadCharacterThumbnail(thumbnailURL).sink(receiveCompletion: { (completion) in
 			if case .failure = completion {
-				self.images[index] = UIImage(named: "Placeholder")?.resizeImage(66, opaque: true, contentMode: .scaleAspectFill)
+				self.images[index] = Asset.placeholderImage
 			}
 		}, receiveValue: { (data) in
-			self.images[index] = UIImage(data: data)?.resizeImage(66, opaque: true, contentMode: .scaleAspectFill)
+			guard let image = UIImage(data: data)?.resizeImage(Constants.charactersRowImageSize, opaque: true, contentMode: .scaleAspectFill) else { return }
+			self.images[index] = image
+			self.cachedImageForThumbnailURL[thumbnailURL] = image
 			self.downloadedImagesIndexStream.send(index)
 		})
 	}

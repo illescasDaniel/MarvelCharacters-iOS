@@ -25,6 +25,7 @@ class CharactersListDataSource {
 	
 	private let characterImagesController = CharacterImagesController()
 	private let charactersRepository: MarvelCharactersRepository
+	private var paginatedCancellables: [Int: AnyCancellable] = [:]
 	private var cancellables: [AnyCancellable] = []
 	
 	init(charactersRepository: MarvelCharactersRepository) {
@@ -37,8 +38,10 @@ class CharactersListDataSource {
 	}
 	
 	func loadData() {
+		guard paginatedCancellables[page] == nil else { return }
+		print("PAGE: \(page)")
 		let request = charactersRepository.charactersSortedByNamePaginated(limit: 20, page: page)
-		cancellables.append(request.receive(on: DispatchQueue.main).sink(receiveCompletion: { (completion) in
+		paginatedCancellables[page] = request.receive(on: DispatchQueue.main).sink(receiveCompletion: { (completion) in
 			switch completion {
 			case .failure(let error):
 				DispatchQueue.main.async {
@@ -48,9 +51,12 @@ class CharactersListDataSource {
 				break
 			}
 		}, receiveValue: { (characters) in
-			self.characters = characters
+			self.characters += characters
+			if !self.characters.isEmpty {
+				self.page += 1
+			}
 			self.delegate?.reloadList()
-		}))
+		})
 	}
 	
 	func downloadThumbnail(_ thumbnailURL: String, forIndex: Int) {
@@ -64,6 +70,9 @@ class CharactersListDataSource {
 	func cancelRequests() {
 		cancellables.forEach {
 			$0.cancel()
+		}
+		paginatedCancellables.forEach {
+			$0.value.cancel()
 		}
 	}
 	

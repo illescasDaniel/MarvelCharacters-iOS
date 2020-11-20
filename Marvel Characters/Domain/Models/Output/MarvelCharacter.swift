@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MarvelCharacter: Decodable {
+struct MarvelCharacter: Decodable, Equatable {
 	/// The unique ID of the character resource.
 	let id: Int
 	/// The name of the character.
@@ -18,4 +18,10 @@ struct MarvelCharacter: Decodable {
 	let urls: [String]
 	/// The representative image for this character.
 	let thumbnail: String
+}
+
+extension MarvelCharacter: Hashable {
+	func hash(into hasher: inout Hasher) {
+		hasher.combine(id)
+	}
 }

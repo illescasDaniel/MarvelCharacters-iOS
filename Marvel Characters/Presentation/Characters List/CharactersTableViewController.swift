@@ -63,7 +63,7 @@ class CharactersTableViewController: UITableViewController {
 		if let thumbnail = dataSource.thumbnail(forIndex: indexPath.row) {
 			cell.characterThumbnailImageView.image = thumbnail
 		} else {
-			cell.characterThumbnailImageView.image = UIImage(named: "Placeholder")?.resizeImage(66, opaque: false, contentMode: .scaleAspectFit)
+			cell.characterThumbnailImageView.image = Asset.placeholderImage
 			dataSource.downloadThumbnail(character.thumbnail, forIndex: indexPath.row)
 		}
 		

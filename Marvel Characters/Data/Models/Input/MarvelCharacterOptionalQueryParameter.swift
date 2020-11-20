@@ -50,13 +50,11 @@ class MarvelCharacterParametersBuilder {
 	}
 	
 	func limit(_ limit: Int) -> Self {
-		
-		return self
+		return addQueryItem(name: "limit", value: String(limit))
 	}
 	
 	func offset(_ offset: Int) -> Self {
-		
-		return self
+		return addQueryItem(name: "offset", value: String(offset))
 	}
 	
 	func page(_ page: Int, limit: Int) -> Self {

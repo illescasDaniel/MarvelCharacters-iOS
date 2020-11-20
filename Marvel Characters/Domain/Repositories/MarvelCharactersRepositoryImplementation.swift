@@ -18,8 +18,6 @@ class MarvelCharactersRepositoryImplementation: MarvelCharactersRepository {
 			.eraseToAnyPublisher()
 	}
 	
-	// maybe hide this?
-	
 	func characters(parameters: MarvelCharacterParameters) -> AnyPublisher<[MarvelCharacter], Error> {
 		dataSource.characters(parameters: parameters)
 			.map(MarvelCharacterModelMapper.mapCharacterDataWrapperToCharacters)

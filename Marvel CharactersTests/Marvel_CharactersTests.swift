@@ -176,4 +176,44 @@ class Marvel_CharactersTests: XCTestCase {
 		}))
 		self.wait(for: [testCharactersEndpointExpectation], timeout: 60)
 	}
+	
+	func testDownloadCharacterThumbnail() {
+	//func downloadCharacterThumbnail(_ thumbnailURL: String) -> AnyPublisher<Data, URLError>
+	}
+	
+	func testCharactersSortedByNamePaginated() {
+		
+		let testCharactersSortedByNamePaginated = expectation(description: "testCharactersSortedByNamePaginated")
+		Publishers.MergeMany(
+			repository.charactersSortedByNamePaginated(limit: 20, page: 0),
+			repository.charactersSortedByNamePaginated(limit: 20, page: 1),
+			repository.charactersSortedByNamePaginated(limit: 20, page: 2)
+		)
+		.collect()
+		.map { (output) in
+			output.flatMap { $0 }
+		}
+		.sink { (completion) in
+			switch completion {
+			case .failure(let error):
+				dump(error)
+				XCTFail(error.localizedDescription)
+				testCharactersSortedByNamePaginated.fulfill()
+			case .finished:
+				print("testCharactersSortedByNamePaginated - no issues")
+			}
+		} receiveValue: { (characters) in
+			print(characters.count)
+			XCTAssertEqual(characters.count, 60)
+			XCTAssertEqual(Set(characters).count, characters.count)
+			testCharactersSortedByNamePaginated.fulfill()
+		}
+		.store(in: &cancellables)
+		
+		self.wait(for: [testCharactersSortedByNamePaginated], timeout: 60)
+	}
+	
+	func testSearchCharacters() {
+//		func searchCharacters(startingWith namePrefix: String) -> AnyPublisher<[MarvelCharacter], Error>
+	}
 }
