@@ -18,9 +18,35 @@ class MarvelCharactersRepositoryImplementation: MarvelCharactersRepository {
 			.eraseToAnyPublisher()
 	}
 	
+	// maybe hide this?
+	
 	func characters(parameters: MarvelCharacterParameters) -> AnyPublisher<[MarvelCharacter], Error> {
 		dataSource.characters(parameters: parameters)
 			.map(MarvelCharacterModelMapper.mapCharacterDataWrapperToCharacters)
+			.eraseToAnyPublisher()
+	}
+	
+	//
+	
+	func charactersSortedByNamePaginated(limit: Int, page: Int) -> AnyPublisher<[MarvelCharacter], Error> {
+		let parameters = MarvelCharacterParameters.Builder()
+			.limit(limit)
+			.offset(limit * page)
+			.orderBy(.ascending(.name))
+			.build()
+		return dataSource.characters(parameters: parameters)
+			.map(MarvelCharacterModelMapper.mapCharacterDataWrapperToCharacters)
+			.eraseToAnyPublisher()
+	}
+	
+	func searchCharacters(startingWith namePrefix: String) -> AnyPublisher<[MarvelCharacter], Error> {
+		let parameters = MarvelCharacterParameters.Builder()
+			.limit(20)
+			.nameStartsWith(prefix: namePrefix)
+			.build()
+		return dataSource.characters(parameters: parameters)
+			.map(MarvelCharacterModelMapper.mapCharacterDataWrapperToCharacters)
+			.throttle(for: .milliseconds(300), scheduler: RunLoop.main, latest: true)
 			.eraseToAnyPublisher()
 	}
 }

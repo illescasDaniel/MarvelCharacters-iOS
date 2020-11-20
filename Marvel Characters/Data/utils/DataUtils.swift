@@ -15,20 +15,30 @@ class DataUtils {
 	
 	func marvelDateFormatter() -> DateFormatter {
 		let dateFormatter = DateFormatter()
-		dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss-SSSS"
+		dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
 		return dateFormatter
 	}
 	
 	#if canImport(ZippyJSON)
 	func marvelJSONDecoder() -> ZippyJSONDecoder {
 		let decoder = ZippyJSONDecoder()
-		decoder.dateDecodingStrategy = .formatted(self.marvelDateFormatter())
+		decoder.dateDecodingStrategy = .custom({ (decoder) -> Date in
+			let container = try decoder.singleValueContainer()
+			let dateString = try container.decode(String.self)
+			let dateFormatter = self.marvelDateFormatter()
+			return dateFormatter.date(from: dateString) ?? Date()
+		})
 		return decoder
 	}
 	#else
 	func marvelJSONDecoder() -> JSONDecoder {
 		let decoder = JSONDecoder()
-		decoder.dateDecodingStrategy = .formatted(self.marvelDateFormatter())
+		decoder.dateDecodingStrategy = .custom({ (decoder) -> Date in
+			let container = try decoder.singleValueContainer()
+			let dateString = try container.decode(String.self)
+			let dateFormatter = self.marvelDateFormatter()
+			return dateFormatter.date(from: dateString) ?? Date()
+		})
 		return decoder
 	}
 	#endif
