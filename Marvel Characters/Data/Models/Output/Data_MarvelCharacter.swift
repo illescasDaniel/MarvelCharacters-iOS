@@ -31,5 +31,35 @@ extension MarvelDataModel {
 		let events: EventList
 		/// A resource list of series in which this character appears.
 		let series: SeriesList
+		
+		enum CodingKeys: String, CodingKey {
+			case id, name, description, modified, resourceURI, urls, thumbnail, comics, stories, events, series
+		}
+		
+		init(from decoder: Decoder) throws {
+			let container = try decoder.container(keyedBy: CodingKeys.self)
+			
+			let id = try container.decode(Int.self, forKey: .id)
+			
+			if Constants.useAgressiveCaching, let cachedCharacter = MarvelCharacterDecodingCache.shared.value(forID: id) {
+				print("Reconstructing character from cached value")
+				self = cachedCharacter
+				return
+			}
+			
+			self.id = id
+			self.name = try container.decode(String.self, forKey: .name)
+			self.description = try container.decode(String.self, forKey: .description)
+			self.modified = try container.decode(Date.self, forKey: .modified)
+			self.resourceURI = try container.decode(String.self, forKey: .resourceURI)
+			self.urls = try container.decode([MarvelURL].self, forKey: .urls)
+			self.thumbnail = try container.decode(MarvelImage.self, forKey: .thumbnail)
+			self.comics = try container.decode(ComicList.self, forKey: .comics)
+			self.stories = try container.decode(StoryList.self, forKey: .stories)
+			self.events = try container.decode(EventList.self, forKey: .events)
+			self.series = try container.decode(SeriesList.self, forKey: .series)
+			
+			MarvelCharacterDecodingCache.shared.storeValue(self, id: id)
+		}
 	}
 }

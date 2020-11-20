@@ -23,6 +23,7 @@ class CharactersTableViewController: UITableViewController {
 		dataSource.delegate = self
 		
 		title = "Marvel Characters"
+		navigationItem.prompt = "Data provided by Marvel. © 2020 MARVEL" // TODO: use the returned text instead ?
 		navigationItem.largeTitleDisplayMode = .always
 		navigationController?.navigationBar.prefersLargeTitles = true
 		

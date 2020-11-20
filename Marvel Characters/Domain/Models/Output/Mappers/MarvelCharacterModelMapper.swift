@@ -20,7 +20,11 @@ class MarvelCharacterModelMapper {
 	}
 	
 	static func mapDataCharacterToCharacter(_ inputModel: MarvelDataModel.MarvelCharacter) -> MarvelCharacter {
-		return MarvelCharacter(
+		if Constants.useAgressiveCaching, let cachedCharacter = MarvelCharacterMappingCache.shared.value(forID: inputModel.id) {
+			print("Using cached mapped model")
+			return cachedCharacter
+		}
+		let mappedCharacter = MarvelCharacter(
 			id: inputModel.id,
 			name: inputModel.name.trimmingCharacters(in: .whitespacesAndNewlines),
 			description: inputModel.description.trimmingCharacters(in: .whitespacesAndNewlines),
@@ -30,5 +34,7 @@ class MarvelCharacterModelMapper {
 			},
 			thumbnail: "\(inputModel.thumbnail.path).\(inputModel.thumbnail.extension)".trimmingCharacters(in: .whitespacesAndNewlines)
 		)
+		MarvelCharacterMappingCache.shared.storeValue(mappedCharacter, id: inputModel.id)
+		return mappedCharacter
 	}
 }

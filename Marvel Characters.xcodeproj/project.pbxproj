@@ -64,6 +64,8 @@
 		657151B6256843F80035F3F1 /* UIImage+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657151B5256843F80035F3F1 /* UIImage+Resize.swift */; };
 		657151BB256848540035F3F1 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657151BA256848540035F3F1 /* Assets.swift */; };
 		657151C325684C640035F3F1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657151C225684C640035F3F1 /* Constants.swift */; };
+		657151CB256867F20035F3F1 /* MarvelCharacterDecodingCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657151CA256867F20035F3F1 /* MarvelCharacterDecodingCache.swift */; };
+		657151D325686BDD0035F3F1 /* MarvelCharacterMappingCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657151D225686BDD0035F3F1 /* MarvelCharacterMappingCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -151,6 +153,8 @@
 		657151B5256843F80035F3F1 /* UIImage+Resize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resize.swift"; sourceTree = "<group>"; };
 		657151BA256848540035F3F1 /* Assets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assets.swift; sourceTree = "<group>"; };
 		657151C225684C640035F3F1 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		657151CA256867F20035F3F1 /* MarvelCharacterDecodingCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelCharacterDecodingCache.swift; sourceTree = "<group>"; };
+		657151D225686BDD0035F3F1 /* MarvelCharacterMappingCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelCharacterMappingCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -480,6 +484,8 @@
 				657151B5256843F80035F3F1 /* UIImage+Resize.swift */,
 				657151BA256848540035F3F1 /* Assets.swift */,
 				657151C225684C640035F3F1 /* Constants.swift */,
+				657151CA256867F20035F3F1 /* MarvelCharacterDecodingCache.swift */,
+				657151D225686BDD0035F3F1 /* MarvelCharacterMappingCache.swift */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -667,6 +673,8 @@
 				6523A30E25659F19009F808D /* MarvelAPIConfig.swift in Sources */,
 				6523A2C6256591F5009F808D /* StorySummary.swift in Sources */,
 				6523A2A825659150009F808D /* MarvelImage.swift in Sources */,
+				657151CB256867F20035F3F1 /* MarvelCharacterDecodingCache.swift in Sources */,
+				657151D325686BDD0035F3F1 /* MarvelCharacterMappingCache.swift in Sources */,
 				6523A30625659DBC009F808D /* Network utils.swift in Sources */,
 				6523A2C1256591C5009F808D /* ComicSummary.swift in Sources */,
 				657151B6256843F80035F3F1 /* UIImage+Resize.swift in Sources */,
