@@ -102,12 +102,78 @@ class Marvel_CharactersTests: XCTestCase {
 		}))
 		self.wait(for: [testCharactersEndpointExpectation], timeout: 60)
 	}
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
+	
+	func testMappingFromCharacterWrapperToCharacter() {
+		let testCharacterMappingExpectation = expectation(description: "testCharacterMappingExpectation")
+		self.cancellables.append(self.dataSource.character(id: 1010338).receive(on: DispatchQueue.main).sink(receiveCompletion: { (completion) in
+			switch completion {
+			case .failure(let error):
+				dump(error)
+				XCTFail(error.localizedDescription)
+				testCharacterMappingExpectation.fulfill()
+			case .finished:
+				break
+			}
+		}, receiveValue: { (characterWrapper) in
+			print(characterWrapper)
+			let mappedCharacter = MarvelCharacterModelMapper.mapCharacterDataWrapperToCharacter(characterWrapper)
+			XCTAssertEqual(characterWrapper.data.results.count, 1)
+			XCTAssertNotNil(characterWrapper.data.results.first)
+			let originalCharacter = characterWrapper.data.results.first!
+			
+			XCTAssertEqual(originalCharacter.id, mappedCharacter.id)
+			XCTAssertEqual(originalCharacter.name.trimmingCharacters(in: .whitespacesAndNewlines), mappedCharacter.name)
+			XCTAssertEqual(originalCharacter.description.trimmingCharacters(in: .whitespacesAndNewlines), mappedCharacter.description)
+			XCTAssertEqual(originalCharacter.urls.compactMap {
+				let url = $0.url.trimmingCharacters(in: .whitespacesAndNewlines)
+				return url.isEmpty ? nil : url
+			}, mappedCharacter.urls)
+			let thumbnail = "\(originalCharacter.thumbnail.path).\(originalCharacter.thumbnail.extension)".trimmingCharacters(in: .whitespacesAndNewlines)
+			XCTAssertEqual(thumbnail, mappedCharacter.thumbnail)
+			
+			testCharacterMappingExpectation.fulfill()
+		}))
+		self.wait(for: [testCharacterMappingExpectation], timeout: 60)
+	}
+	
+	func testCharactersMapping() {
+		let testCharactersEndpointExpectation = expectation(description: "testCharactersEndpoint")
+		let parameters = MarvelCharacterParametersBuilder()
+			//.nameStartsWith(prefix: "Spider")
+			//.page(0, limit: 7)
+			.build()
+		
+		self.cancellables.append(self.dataSource.characters(parameters: parameters).receive(on: DispatchQueue.main).sink(receiveCompletion: { (completion) in
+			switch completion {
+			case .failure(let error):
+				dump(error)
+				XCTFail(error.localizedDescription)
+				testCharactersEndpointExpectation.fulfill()
+			case .finished:
+				print("testCharactersEndpoint - no issues")
+			}
+		}, receiveValue: { (characterDataWrapper) in
+			let originalCharacters = characterDataWrapper.data.results
+			let mappedCharacters = MarvelCharacterModelMapper.mapCharacterDataWrapperToCharacters(characterDataWrapper)
+			
+			XCTAssertEqual(originalCharacters.count, mappedCharacters.count)
+			
+			for (originalCharacter, mappedCharacter) in
+				zip(originalCharacters.sorted(by: { $0.id < $1.id }), mappedCharacters.sorted(by: { $0.id < $1.id })) {
+				
+				XCTAssertEqual(originalCharacter.id, mappedCharacter.id)
+				XCTAssertEqual(originalCharacter.name.trimmingCharacters(in: .whitespacesAndNewlines), mappedCharacter.name)
+				XCTAssertEqual(originalCharacter.description.trimmingCharacters(in: .whitespacesAndNewlines), mappedCharacter.description)
+				XCTAssertEqual(originalCharacter.urls.compactMap {
+					let url = $0.url.trimmingCharacters(in: .whitespacesAndNewlines)
+					return url.isEmpty ? nil : url
+				}, mappedCharacter.urls)
+				let thumbnail = "\(originalCharacter.thumbnail.path).\(originalCharacter.thumbnail.extension)".trimmingCharacters(in: .whitespacesAndNewlines)
+				XCTAssertEqual(thumbnail, mappedCharacter.thumbnail)
+			}
+			
+			testCharactersEndpointExpectation.fulfill()
+		}))
+		self.wait(for: [testCharactersEndpointExpectation], timeout: 60)
+	}
 }
