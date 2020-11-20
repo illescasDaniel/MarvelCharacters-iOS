@@ -1,5 +1,5 @@
 //
-//  CharactersTableViewController.swift
+//  CharactersSearchTableViewController.swift
 //  Marvel Characters
 //
 //  Created by Daniel Illescas Romero on 20/11/20.
@@ -7,30 +7,21 @@
 
 import UIKit
 
-class CharactersTableViewController: UITableViewController {
+class CharactersSearchTableViewController: UITableViewController {
 	
-	private let dataSource = CharactersListDataSource(charactersRepository: MarvelCharactersRepositoryImplementation())
+	let dataSource = CharactersSearchListDataSource(charactersRepository: MarvelCharactersRepositoryImplementation())
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
 		// Uncomment the following line to preserve selection between presentations
-		// self.clearsSelectionOnViewWillAppear = false
+		// self.clearsSelectionOnViewWillAppear = falsess
 		
 		// Uncomment the following line to display an Edit button in the navigation bar for this view controller.
 		// self.navigationItem.rightBarButtonItem = self.editButtonItem
 		
 		dataSource.delegate = self
-		
-		title = "Marvel Characters"
-		navigationItem.largeTitleDisplayMode = .always
-		navigationController?.navigationBar.prefersLargeTitles = true
-		
-		tableView.register(UINib(nibName: "CharacterTableViewCell", bundle: .main), forCellReuseIdentifier: "characterCell")
-		
-		let searchController = CharactersSearchTableViewController(nibName: "CharactersSearchTableViewController", bundle: .main)
-		navigationItem.searchController = UISearchController(searchResultsController: searchController)
-		navigationItem.searchController?.searchResultsUpdater = searchController
+		tableView.register(UINib(nibName: "SearchTableViewCell", bundle: .main), forCellReuseIdentifier: "searchCell")
 	}
 	
 	// MARK: - Table view data source
@@ -43,9 +34,9 @@ class CharactersTableViewController: UITableViewController {
 		return dataSource.characters.count
 	}
 	
+	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		
-		let cell = tableView.dequeueReusableCell(withIdentifier: "characterCell", for: indexPath) as! CharacterTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: "searchCell", for: indexPath) as! SearchTableViewCell
 		
 		let character = dataSource.characters[indexPath.row]
 		cell.textLabel?.text = character.name
@@ -100,3 +91,4 @@ class CharactersTableViewController: UITableViewController {
 	*/
 	
 }
+

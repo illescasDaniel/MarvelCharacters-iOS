@@ -37,7 +37,9 @@ class CharactersSearchListDataSource {
 		cancellables.append(charactersRepository.searchCharacters(startingWith: searchText).receive(on: DispatchQueue.main).sink(receiveCompletion: { (completion) in
 			switch completion {
 			case .failure(let error):
-				self.delegate?.errorWithSearchResults(error)
+				DispatchQueue.main.async {
+					self.delegate?.errorWithSearchResults(error)
+				}
 			case .finished:
 				break
 			}
