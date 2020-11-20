@@ -11,6 +11,7 @@ import Combine
 class MarvelCharactersRepositoryImplementation: MarvelCharactersRepository {
 	
 	private let dataSource = MarvelCharactersDataSource()
+	private var cachedSearches: [String: [MarvelCharacter]] = [:]
 	
 	func character(id: Int) -> AnyPublisher<MarvelCharacter, Error> {
 		dataSource.character(id: id)
@@ -44,13 +45,22 @@ class MarvelCharactersRepositoryImplementation: MarvelCharactersRepository {
 	}
 	
 	func searchCharacters(startingWith namePrefix: String) -> AnyPublisher<[MarvelCharacter], Error> {
+		
+		if let cachedResponse = self.cachedSearches[namePrefix] {
+			print("Using cached response")
+			return Just(cachedResponse).setFailureType(to: Error.self).eraseToAnyPublisher()
+		}
+		
 		let parameters = MarvelCharacterParameters.Builder()
 			.limit(20)
 			.nameStartsWith(prefix: namePrefix)
 			.build()
 		return dataSource.characters(parameters: parameters)
-			.map(MarvelCharacterModelMapper.mapCharacterDataWrapperToCharacters)
-			.throttle(for: .milliseconds(300), scheduler: RunLoop.main, latest: true)
+			.map { (originalData) -> [MarvelCharacter] in
+				let mappedData = MarvelCharacterModelMapper.mapCharacterDataWrapperToCharacters(originalData)
+				self.cachedSearches[namePrefix] = mappedData
+				return mappedData
+			}
 			.eraseToAnyPublisher()
 	}
 }

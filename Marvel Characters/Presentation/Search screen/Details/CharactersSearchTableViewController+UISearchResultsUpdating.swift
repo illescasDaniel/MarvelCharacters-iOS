@@ -6,11 +6,12 @@
 //
 
 import UIKit
+import Combine
 
 extension CharactersSearchTableViewController: UISearchResultsUpdating {
 	
 	func updateSearchResults(for searchController: UISearchController) {
 		guard let searchText = searchController.searchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
-		dataSource.updateCharacters(searchText: searchText)
+		dataSource.searchTextStream.send(searchText)
 	}
 }

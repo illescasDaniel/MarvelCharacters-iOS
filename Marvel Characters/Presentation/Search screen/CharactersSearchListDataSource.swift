@@ -22,11 +22,23 @@ class CharactersSearchListDataSource {
 	private let charactersRepository: MarvelCharactersRepository
 	private var cancellables: [AnyCancellable] = []
 	
+	var searchTextStream = PassthroughSubject<String, Never>()
+	
 	init(charactersRepository: MarvelCharactersRepository) {
 		self.charactersRepository = charactersRepository
+		
+		searchTextStream.debounce(for: .milliseconds(Constants.searchDebounceDelay), scheduler: RunLoop.main).sink { (newSearchText) in
+			if newSearchText.count > 1 {
+				self.updateCharacters(searchText: newSearchText)
+			} else {
+				self.characters = []
+				self.delegate?.reloadSearchListResults()
+			}
+		}
+		.store(in: &cancellables)
 	}
 	
-	func updateCharacters(searchText: String) {
+	private func updateCharacters(searchText: String) {
 		
 		if searchText.isEmpty {
 			self.characters = []
@@ -34,7 +46,7 @@ class CharactersSearchListDataSource {
 			return
 		}
 		
-		cancellables.append(charactersRepository.searchCharacters(startingWith: searchText).receive(on: DispatchQueue.main).sink(receiveCompletion: { (completion) in
+		charactersRepository.searchCharacters(startingWith: searchText).receive(on: RunLoop.main).sink(receiveCompletion: { (completion) in
 			switch completion {
 			case .failure(let error):
 				DispatchQueue.main.async {
@@ -46,7 +58,8 @@ class CharactersSearchListDataSource {
 		}, receiveValue: { (characters) in
 			self.characters = characters
 			self.delegate?.reloadSearchListResults()
-		}))
+		})
+		.store(in: &cancellables)
 	}
 	
 	func cancelRequests() {

@@ -14,7 +14,8 @@ class MarvelCharactersDataSource {
 	private let dataUtils = DataUtils()
 	
 	func characters(parameters: MarvelCharacterParameters) -> AnyPublisher<MarvelDataModel.CharacterDataWrapper, Error> {
-		self.router.characters(parameters: parameters).requestPublisher()
+		print("characters!!, parameters: \(parameters)")
+		return self.router.characters(parameters: parameters).requestPublisher()
 			.mapError { MarvelNetworkError.urlError($0) }
 			.marvelAPIValidate()
 			.decode(type: MarvelDataModel.CharacterDataWrapper.self, decoder: dataUtils.marvelJSONDecoder())
