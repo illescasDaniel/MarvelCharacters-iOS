@@ -19,7 +19,7 @@ class CharacterImagesController {
 	private var downloadedImagesIndexStream = PassthroughSubject<Int, Never>()
 	private var downloadedImagesIndexPathStream = PassthroughSubject<IndexPath, Never>()
 	
-	private let queue = DispatchQueue(label: "Images controller")//, qos: .background, attributes: .concurrent)
+	private let queue = DispatchQueue(label: "Images controller")
 	
 	private let locker = NSLock()
 	
