@@ -9,6 +9,7 @@ import struct CoreGraphics.CGFloat
 
 enum Constants {
 	static let charactersRowImageSize: CoreGraphics.CGFloat = 64
+	static let searchCharactersRowImageSize: CoreGraphics.CGFloat = 32
 	static let searchDebounceDelay: Swift.Int = 250
 	static let useAgressiveCaching: Bool = true
 }

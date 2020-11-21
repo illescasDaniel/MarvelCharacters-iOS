@@ -128,8 +128,8 @@ class Marvel_CharactersTests: XCTestCase {
 				let url = $0.url.trimmingCharacters(in: .whitespacesAndNewlines)
 				return url.isEmpty ? nil : url
 			}, mappedCharacter.urls)
-			let thumbnail = "\(originalCharacter.thumbnail.path).\(originalCharacter.thumbnail.extension)".trimmingCharacters(in: .whitespacesAndNewlines)
-			XCTAssertEqual(thumbnail, mappedCharacter.thumbnail)
+			XCTAssertEqual(originalCharacter.thumbnail.path, mappedCharacter.thumbnail.path)
+			XCTAssertEqual(originalCharacter.thumbnail.imageExtension, mappedCharacter.thumbnail.imageExtension)
 			
 			testCharacterMappingExpectation.fulfill()
 		}))
@@ -168,8 +168,8 @@ class Marvel_CharactersTests: XCTestCase {
 					let url = $0.url.trimmingCharacters(in: .whitespacesAndNewlines)
 					return url.isEmpty ? nil : url
 				}, mappedCharacter.urls)
-				let thumbnail = "\(originalCharacter.thumbnail.path).\(originalCharacter.thumbnail.extension)".trimmingCharacters(in: .whitespacesAndNewlines)
-				XCTAssertEqual(thumbnail, mappedCharacter.thumbnail)
+				XCTAssertEqual(originalCharacter.thumbnail.path, mappedCharacter.thumbnail.path)
+				XCTAssertEqual(originalCharacter.thumbnail.imageExtension, mappedCharacter.thumbnail.imageExtension)
 			}
 			
 			testCharactersEndpointExpectation.fulfill()

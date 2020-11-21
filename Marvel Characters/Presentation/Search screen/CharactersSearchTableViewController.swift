@@ -39,8 +39,22 @@ class CharactersSearchTableViewController: UITableViewController {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "searchCell", for: indexPath) as! SearchTableViewCell
 		
 		let character = dataSource.characters[indexPath.row]
-		cell.textLabel?.text = character.name
-		cell.detailTextLabel?.text = String(character.description.prefix(100))
+		cell.characterNameLabel.text = character.name
+		
+		if character.description.isEmpty {
+			cell.characterDescriptionLabel.text = nil
+			cell.characterDescriptionLabel.isHidden = true
+		} else {
+			cell.characterDescriptionLabel.isHidden = false
+			cell.characterDescriptionLabel.text = String(character.description.prefix(100))
+		}
+		
+		if let thumbnail = dataSource.thumbnail(forIndex: indexPath.row) {
+			cell.characterThumbnailImageView.image = thumbnail
+		} else {
+			cell.characterThumbnailImageView.image = Asset.smallPlaceholderImage
+			dataSource.downloadThumbnail(character.thumbnail, forIndex: indexPath.row)
+		}
 		
 		return cell
 	}

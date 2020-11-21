@@ -12,6 +12,11 @@ extension MarvelDataModel {
 		/// The directory path of to the image.
 		let path: String
 		/// The file extension for the image.
-		let `extension`: String
+		let imageExtension: String
+		
+		enum CodingKeys: String, CodingKey {
+			case path
+			case imageExtension = "extension"
+		}
 	}
 }

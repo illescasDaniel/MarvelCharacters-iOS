@@ -25,8 +25,8 @@ class MarvelCharactersRepositoryImplementation: MarvelCharactersRepository {
 			.eraseToAnyPublisher()
 	}
 	
-	func downloadCharacterThumbnail(_ thumbnailURL: String) -> AnyPublisher<Data, URLError> {
-		URLSession.shared.dataTaskPublisher(for: URL(string: thumbnailURL)!)
+	func downloadCharacterThumbnail(_ thumbnailURL: URL) -> AnyPublisher<Data, URLError> {
+		URLSession.shared.dataTaskPublisher(for: thumbnailURL)
 			.validate()
 			.eraseToAnyPublisher()
 	}

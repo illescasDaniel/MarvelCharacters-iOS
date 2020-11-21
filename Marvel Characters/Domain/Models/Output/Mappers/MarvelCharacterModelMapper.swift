@@ -26,13 +26,13 @@ class MarvelCharacterModelMapper {
 		}
 		let mappedCharacter = MarvelCharacter(
 			id: inputModel.id,
-			name: inputModel.name.trimmingCharacters(in: .whitespacesAndNewlines),
-			description: inputModel.description.trimmingCharacters(in: .whitespacesAndNewlines),
+			name: inputModel.name.cleaned(),
+			description: inputModel.description.cleaned(),
 			urls: inputModel.urls.compactMap {
-				let trimmedURL = $0.url.trimmingCharacters(in: .whitespacesAndNewlines)
+				let trimmedURL = $0.url.cleaned()
 				return trimmedURL.isEmpty ? nil : trimmedURL
 			},
-			thumbnail: "\(inputModel.thumbnail.path).\(inputModel.thumbnail.extension)".trimmingCharacters(in: .whitespacesAndNewlines)
+			thumbnail: MarvelImage(path: inputModel.thumbnail.path.cleaned(), imageExtension: inputModel.thumbnail.imageExtension.cleaned())
 		)
 		MarvelCharacterMappingCache.shared.storeValue(mappedCharacter, id: inputModel.id)
 		return mappedCharacter

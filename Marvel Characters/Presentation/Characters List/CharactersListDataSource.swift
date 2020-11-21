@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import class UIKit.UIImage
+import class UIKit.UIScreen
 
 protocol CharactersListDataSourceDelegate: class {
 	func reloadList()
@@ -23,18 +24,23 @@ class CharactersListDataSource {
 	private(set) var characters: [MarvelCharacter] = []
 	private var page: Int = 0
 	
-	private let characterImagesController = CharacterImagesController()
+	private let characterImagesController = CharacterImagesController(imagesSize: Constants.charactersRowImageSize)
 	private let charactersRepository: MarvelCharactersRepository
 	private var paginatedCancellables: [Int: AnyCancellable] = [:]
 	private var cancellables: [AnyCancellable] = []
 	
+	private let marvelImageThumbnailQuality: MarvelImage.ThumbnailQuality = {
+		switch UIScreen.main.scale {
+		case 1:
+			return .standardMedium_100px
+		default:
+			return .standardLarge_200px
+		}
+	}()
+	
 	init(charactersRepository: MarvelCharactersRepository) {
 		self.charactersRepository = charactersRepository
-		
-		let imagesControllerPublisher = self.characterImagesController.publisher.collect(.byTimeOrCount(DispatchQueue.main, .milliseconds(500), 10))
-		cancellables.append(imagesControllerPublisher.receive(on: DispatchQueue.main).sink { (rowIndicesToReload) in
-			self.delegate?.reloadRows(indices: rowIndicesToReload)
-		})
+		setupImageLoading()
 	}
 	
 	func loadData() {
@@ -65,8 +71,8 @@ class CharactersListDataSource {
 		})
 	}
 	
-	func downloadThumbnail(_ thumbnailURL: String, forIndex: Int) {
-		characterImagesController.downloadImage(thumbnailURL, forIndex: forIndex)
+	func downloadThumbnail(_ thumbnail: MarvelImage, forIndex: Int) {
+		characterImagesController.downloadImage(thumbnail.imageURL(withQuality: marvelImageThumbnailQuality), forIndex: forIndex)
 	}
 	
 	func thumbnail(forIndex index: Int) -> UIImage? {
@@ -80,6 +86,15 @@ class CharactersListDataSource {
 		paginatedCancellables.forEach {
 			$0.value.cancel()
 		}
+	}
+	
+	// MARK: Convenience
+	
+	private func setupImageLoading() {
+		let imagesControllerPublisher = self.characterImagesController.publisher.collect(.byTimeOrCount(DispatchQueue.main, .milliseconds(500), 10))
+		cancellables.append(imagesControllerPublisher.receive(on: DispatchQueue.main).sink { (rowIndicesToReload) in
+			self.delegate?.reloadRows(indices: rowIndicesToReload)
+		})
 	}
 	
 	deinit {

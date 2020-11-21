@@ -17,7 +17,7 @@ struct MarvelCharacter: Decodable, Equatable {
 	/// A set of public web site URLs for the resource.
 	let urls: [String]
 	/// The representative image for this character.
-	let thumbnail: String
+	let thumbnail: MarvelImage
 }
 
 extension MarvelCharacter: Hashable {
