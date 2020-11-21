@@ -31,7 +31,7 @@ class CharactersListDataSource {
 	init(charactersRepository: MarvelCharactersRepository) {
 		self.charactersRepository = charactersRepository
 		
-		let imagesControllerPublisher = self.characterImagesController.publisher.collect(.byTimeOrCount( DispatchQueue.main, .milliseconds(500), 10))
+		let imagesControllerPublisher = self.characterImagesController.publisher.collect(.byTimeOrCount(DispatchQueue.main, .milliseconds(500), 10))
 		cancellables.append(imagesControllerPublisher.receive(on: DispatchQueue.main).sink { (rowIndicesToReload) in
 			self.delegate?.reloadRows(indices: rowIndicesToReload)
 		})
@@ -51,7 +51,13 @@ class CharactersListDataSource {
 				break
 			}
 		}, receiveValue: { (characters) in
+			
+			let currentNumberOfCharacters = self.characters.count
 			self.characters += characters
+			for (characterToAddThumbnail, index) in zip(characters, currentNumberOfCharacters..<(currentNumberOfCharacters + characters.count)) {
+				self.downloadThumbnail(characterToAddThumbnail.thumbnail, forIndex: index)
+			}
+			
 			if !self.characters.isEmpty {
 				self.page += 1
 			}
