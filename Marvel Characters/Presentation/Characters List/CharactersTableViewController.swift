@@ -71,6 +71,13 @@ class CharactersTableViewController: UITableViewController {
 		return cell
 	}
 	
+	override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+		let maximumItemsNeeded = indexPath.row + 1
+		if dataSource.characters.count <= maximumItemsNeeded {
+			dataSource.loadData()
+		}
+	}
+	
 	/*
 	// MARK: - Navigation
 	

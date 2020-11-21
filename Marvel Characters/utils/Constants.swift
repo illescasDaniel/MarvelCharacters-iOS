@@ -12,4 +12,5 @@ enum Constants {
 	static let searchCharactersRowImageSize: CoreGraphics.CGFloat = 32
 	static let searchDebounceDelay: Swift.Int = 250
 	static let useAgressiveCaching: Bool = true
+	static let charactersListPageSize: Int = 20
 }

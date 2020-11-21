@@ -46,7 +46,7 @@ class CharactersListDataSource {
 	func loadData() {
 		guard paginatedCancellables[page] == nil else { return }
 		print("PAGE: \(page)")
-		let request = charactersRepository.charactersSortedByNamePaginated(limit: 20, page: page)
+		let request = charactersRepository.charactersSortedByNamePaginated(limit: Constants.charactersListPageSize, page: page)
 		paginatedCancellables[page] = request.receive(on: DispatchQueue.main).sink(receiveCompletion: { (completion) in
 			switch completion {
 			case .failure(let error):
