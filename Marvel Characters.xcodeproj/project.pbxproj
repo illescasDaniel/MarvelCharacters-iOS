@@ -78,6 +78,7 @@
 		6571522225698CA50035F3F1 /* CharacterDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6571522125698CA50035F3F1 /* CharacterDetailTableViewController.swift */; };
 		65E9A3822569A3620016C0C9 /* CharacterDetailDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E9A3812569A3620016C0C9 /* CharacterDetailDataSource.swift */; };
 		65E9A3882569A5580016C0C9 /* CharacterDetailTableViewController+DataSourceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E9A3872569A5580016C0C9 /* CharacterDetailTableViewController+DataSourceDelegate.swift */; };
+		65E9A3902569C47F0016C0C9 /* SRCopyableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E9A38F2569C47F0016C0C9 /* SRCopyableLabel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -179,6 +180,7 @@
 		6571522125698CA50035F3F1 /* CharacterDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterDetailTableViewController.swift; sourceTree = "<group>"; };
 		65E9A3812569A3620016C0C9 /* CharacterDetailDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterDetailDataSource.swift; sourceTree = "<group>"; };
 		65E9A3872569A5580016C0C9 /* CharacterDetailTableViewController+DataSourceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CharacterDetailTableViewController+DataSourceDelegate.swift"; sourceTree = "<group>"; };
+		65E9A38F2569C47F0016C0C9 /* SRCopyableLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRCopyableLabel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -536,6 +538,7 @@
 			isa = PBXGroup;
 			children = (
 				6571520025693B540035F3F1 /* .gitkeep */,
+				65E9A38F2569C47F0016C0C9 /* SRCopyableLabel.swift */,
 			);
 			path = "supporting views";
 			sourceTree = "<group>";
@@ -731,6 +734,7 @@
 				6571520C256966370035F3F1 /* CharacterListDataSource+CharactersSection.swift in Sources */,
 				6523A2CB2565920F009F808D /* EventSummary.swift in Sources */,
 				6561AB5D25668F37008E74EB /* ErrorOutput.swift in Sources */,
+				65E9A3902569C47F0016C0C9 /* SRCopyableLabel.swift in Sources */,
 				6523A296256590F8009F808D /* CharacterDataContainer.swift in Sources */,
 				6523A28325658B16009F808D /* CharacterDataWrapper.swift in Sources */,
 				6561AB652566B8D4008E74EB /* URLSessionDataTaskPublisher+MarvelValidate.swift in Sources */,

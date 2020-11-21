@@ -11,7 +11,16 @@ import Combine
 class MarvelCharactersRepositoryImplementation: MarvelCharactersRepository {
 	
 	private let dataSource = MarvelCharactersDataSource()
-	private var cachedSearches: [String: [MarvelCharacter]] = [:]
+	private var cachedSearches: [CachedSearch: [MarvelCharacter]] = [:]
+	
+	private struct CachedSearch: Hashable {
+		let searchText: String
+		let page: Int
+		func hash(into hasher: inout Hasher) {
+			hasher.combine(searchText)
+			hasher.combine(page)
+		}
+	}
 	
 	func character(id: Int) -> AnyPublisher<MarvelCharacter, Error> {
 		dataSource.character(id: id)
@@ -44,36 +53,15 @@ class MarvelCharactersRepositoryImplementation: MarvelCharactersRepository {
 			.eraseToAnyPublisher()
 	}
 	
-	func searchCharacters(startingWith namePrefix: String) -> AnyPublisher<[MarvelCharacter], Error> {
+	func searchCharactersPaginated(startingWith namePrefix: String, limit: Int, page: Int) -> AnyPublisher<[MarvelCharacter], Error> {
 		
-		if let cachedResponse = self.cachedSearches[namePrefix] {
+		if let cachedResponse = self.cachedSearches[CachedSearch(searchText: namePrefix, page: page)] {
 			print("Using cached response")
 			return Just(cachedResponse).setFailureType(to: Error.self).eraseToAnyPublisher()
 		}
 		
 		let parameters = MarvelCharacterParameters.Builder()
-			.limit(20)
-			.nameStartsWith(prefix: namePrefix)
-			.orderBy(.ascending(.name))
-			.build()
-		return dataSource.characters(parameters: parameters)
-			.map { (originalData) -> [MarvelCharacter] in
-				let mappedData = MarvelCharacterModelMapper.mapCharacterDataWrapperToCharacters(originalData)
-				self.cachedSearches[namePrefix] = mappedData
-				return mappedData
-			}
-			.eraseToAnyPublisher()
-	}
-	
-	func searchCharactersPaginated(startingWith namePrefix: String, page: Int) -> AnyPublisher<[MarvelCharacter], Error> {
-		
-//		if let cachedResponse = self.cachedSearches[namePrefix] {
-//			print("Using cached response")
-//			return Just(cachedResponse).setFailureType(to: Error.self).eraseToAnyPublisher()
-//		}
-		
-		let parameters = MarvelCharacterParameters.Builder()
-			.page(page, limit: 20)
+			.page(page, limit: limit)
 			.nameStartsWith(prefix: namePrefix)
 			.orderBy(.ascending(.name))
 			.build()
@@ -81,7 +69,7 @@ class MarvelCharactersRepositoryImplementation: MarvelCharactersRepository {
 		return dataSource.characters(parameters: parameters)
 			.map { (originalData) -> [MarvelCharacter] in
 				let mappedData = MarvelCharacterModelMapper.mapCharacterDataWrapperToCharacters(originalData)
-				self.cachedSearches[namePrefix] = mappedData
+				self.cachedSearches[CachedSearch(searchText: namePrefix, page: page)] = mappedData
 				return mappedData
 			}
 			.eraseToAnyPublisher()

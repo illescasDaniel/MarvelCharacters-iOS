@@ -16,6 +16,7 @@ enum Constants {
 	static let searchDebounceDelay: Swift.Int = 250
 	static let useAgressiveCaching: Bool = true
 	static let charactersListPageSize: Int = 20
+	static let charactersSearchPageSize: Int = 20
 }
 
 extension Constants {

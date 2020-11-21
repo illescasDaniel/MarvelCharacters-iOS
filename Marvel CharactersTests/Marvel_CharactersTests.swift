@@ -185,9 +185,9 @@ class Marvel_CharactersTests: XCTestCase {
 		
 		let testCharactersSortedByNamePaginated = expectation(description: "testCharactersSortedByNamePaginated")
 		Publishers.MergeMany(
-			repository.charactersSortedByNamePaginated(limit: 20, page: 0),
-			repository.charactersSortedByNamePaginated(limit: 20, page: 1),
-			repository.charactersSortedByNamePaginated(limit: 20, page: 2)
+			repository.charactersSortedByNamePaginated(limit: 20, page: 0, ascending: true),
+			repository.charactersSortedByNamePaginated(limit: 20, page: 1, ascending: true),
+			repository.charactersSortedByNamePaginated(limit: 20, page: 2, ascending: true)
 		)
 		.collect()
 		.map { (output) in

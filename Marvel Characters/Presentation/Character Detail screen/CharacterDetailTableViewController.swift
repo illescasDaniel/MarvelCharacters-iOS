@@ -29,7 +29,6 @@ class CharacterDetailTableViewController: UITableViewController {
 		// Uncomment the following line to display an Edit button in the navigation bar for this view controller.
 		// self.navigationItem.rightBarButtonItem = self.editButtonItem
 		
-		self.characterImageView.image = self.placeholderImage
 		dataSource.delegate = self
 		dataSource.downloadCharacterImage(fromPath: self.character.thumbnail)
 		setupNavigationBar()
@@ -49,6 +48,16 @@ class CharacterDetailTableViewController: UITableViewController {
 		self.placeholderImage = placeholderImage
 	}
 	
+//	override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+//		return false
+//	}
+	
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		guard indexPath.section == 2 /* links */ else { return }
+		let urls = character.urls.compactMap(URL.init)
+		UIApplication.shared.open(urls[indexPath.row], options: [:], completionHandler: nil)
+	}
+	
 	// MARK: Convenience
 	
 	private func setupNavigationBar() {
@@ -61,6 +70,8 @@ class CharacterDetailTableViewController: UITableViewController {
 	}
 	
 	private func setupViews() {
+		self.tableView.allowsSelection = false
+		self.characterImageView.image = self.placeholderImage
 		self.characterImageView.layer.cornerRadius = 8
 		self.characterImageView.layer.cornerCurve = .continuous
 	}

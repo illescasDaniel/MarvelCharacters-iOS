@@ -28,7 +28,6 @@ class CharactersSearchListDataSource {
 	private let characterImagesController = CharacterImagesController(imagesSize: Constants.characterInSearchResultRowImageSize)
 	private let charactersRepository: MarvelCharactersRepository
 	private var cancellables: [AnyCancellable] = []
-	private var loadMoreDataCancellable: AnyCancellable?
 	private var paginatedCancellables: [Int: AnyCancellable] = [:]
 	private var page: Int = 0
 	private var currentSearchText: String = ""
@@ -57,14 +56,15 @@ class CharactersSearchListDataSource {
 			$0.cancel()
 		}
 		self.cancellables.removeAll(keepingCapacity: true)
+		cancelPaginatedRequests()
 	}
 	
 	func loadMoreData() {
 		guard self.currentSearchText.count > 1 else { return }
-		guard paginatedCancellables[self.page] == nil else { return }
+		guard self.paginatedCancellables[self.page] == nil else { return }
 		
-		let request = self.charactersRepository.searchCharactersPaginated(startingWith: self.currentSearchText, page: self.page)
-		self.loadMoreDataCancellable = request.sink(receiveCompletion: { (completion) in
+		let request = self.charactersRepository.searchCharactersPaginated(startingWith: self.currentSearchText, limit: Constants.charactersSearchPageSize, page: self.page)
+		self.paginatedCancellables[self.page] = request.sink(receiveCompletion: { (completion) in
 			if case .failure(let error) = completion {
 				DispatchQueue.main.async {
 					self.delegate?.errorWithSearchResults(error)
@@ -79,7 +79,7 @@ class CharactersSearchListDataSource {
 				indexPathsAndImageToLoad.append((characterToAddThumbnail.thumbnail, indexPath))
 			}
 			
-			if moreCharacters.count == 20 /* limit */ {
+			if moreCharacters.count == Constants.charactersSearchPageSize /* limit */ {
 				self.page += 1
 			}
 			
@@ -95,8 +95,15 @@ class CharactersSearchListDataSource {
 	
 	// MARK: Convenience
 	
+	private func cancelPaginatedRequests() {
+		self.paginatedCancellables.forEach {
+			$0.value.cancel()
+		}
+		self.paginatedCancellables.removeAll(keepingCapacity: true)
+	}
+	
 	private func setupSearchTextStream() {
-		self.searchTextStream.debounce(for: .milliseconds(Constants.searchDebounceDelay), scheduler: RunLoop.main).sink { (newSearchText) in
+		self.searchTextStream.debounce(for: .milliseconds(Constants.searchDebounceDelay), scheduler: DispatchQueue.main).sink { (newSearchText) in
 			if newSearchText.count > 1 {
 				self.updateCharacters(searchText: newSearchText)
 			} else {
@@ -116,16 +123,25 @@ class CharactersSearchListDataSource {
 	
 	private func updateCharacters(searchText: String) {
 		
+		if searchText == self.currentSearchText, !self.characters.isEmpty {
+			return
+		}
+		
+		cancelPaginatedRequests()
+		
 		self.currentSearchText = searchText
 		self.page = 0
 		
 		if searchText.isEmpty {
 			self.characters = []
-			self.delegate?.reloadSearchListResults()
+			DispatchQueue.main.async {
+				self.delegate?.reloadSearchListResults()
+			}
 			return
 		}
 		
-		self.charactersRepository.searchCharacters(startingWith: searchText).receive(on: RunLoop.main).sink(receiveCompletion: { (completion) in
+		let request = self.charactersRepository.searchCharactersPaginated(startingWith: self.currentSearchText, limit: Constants.charactersSearchPageSize, page: self.page)
+		self.paginatedCancellables[self.page] = request.sink(receiveCompletion: { (completion) in
 			if case .failure(let error) = completion {
 				DispatchQueue.main.async {
 					self.delegate?.errorWithSearchResults(error)
@@ -138,12 +154,13 @@ class CharactersSearchListDataSource {
 				self.downloadThumbnail(characterToAddThumbnail.thumbnail, forIndexPath: IndexPath(row: index, section: 0))
 			}
 			self.characters = characters
-			if characters.count == 20 /* limit */ {
+			if characters.count == Constants.charactersSearchPageSize /* limit */ {
 				self.page += 1
 			}
-			self.delegate?.reloadSearchListResults()
+			DispatchQueue.main.async {
+				self.delegate?.reloadSearchListResults()
+			}
 		})
-		.store(in: &self.cancellables)
 	}
 	
 	deinit {
