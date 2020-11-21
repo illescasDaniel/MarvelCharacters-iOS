@@ -11,6 +11,9 @@ extension CharactersTableViewController: CharactersListDataSourceDelegate {
 	
 	func reloadList() {
 		self.tableView.reloadData()
+		if !Other.attributionText.isEmpty && Other.attributionText != self.navigationItem.prompt {
+			self.navigationItem.prompt = Other.attributionText
+		}
 	}
 	
 	func reloadRow(index: Int) {

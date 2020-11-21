@@ -24,6 +24,10 @@ class CharactersSearchTableViewController: UITableViewController {
 		self.tableView.register(UINib(nibName: "SearchTableViewCell", bundle: .main), forCellReuseIdentifier: "searchCell")
 	}
 	
+	static func build() -> CharactersSearchTableViewController {
+		CharactersSearchTableViewController(nibName: "CharactersSearchTableViewController", bundle: .main)
+	}
+	
 	// MARK: - Table view data source
 	
 	override func numberOfSections(in tableView: UITableView) -> Int {
@@ -56,6 +60,12 @@ class CharactersSearchTableViewController: UITableViewController {
 		}
 		
 		return cell
+	}
+	
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		let character = self.dataSource.characters[indexPath.row]
+		let characterDetailVC = CharacterDetailViewController.build(withCharacter: character)
+		self.presentingViewController?.navigationController?.pushViewController(characterDetailVC, animated: true)
 	}
 	
 	override func scrollViewDidScroll(_ scrollView: UIScrollView) {

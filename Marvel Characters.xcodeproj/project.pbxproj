@@ -74,6 +74,8 @@
 		657151FB25693B1D0035F3F1 /* DiskImagesPoolController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657151FA25693B1D0035F3F1 /* DiskImagesPoolController.swift */; };
 		6571520125693B540035F3F1 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = 6571520025693B540035F3F1 /* .gitkeep */; };
 		6571520C256966370035F3F1 /* CharacterListDataSource+CharactersSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6571520B256966370035F3F1 /* CharacterListDataSource+CharactersSection.swift */; };
+		65715218256982810035F3F1 /* CharacterDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65715217256982810035F3F1 /* CharacterDetailViewController.swift */; };
+		6571521D256989BB0035F3F1 /* Other.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6571521C256989BB0035F3F1 /* Other.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -171,6 +173,8 @@
 		657151FA25693B1D0035F3F1 /* DiskImagesPoolController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskImagesPoolController.swift; sourceTree = "<group>"; };
 		6571520025693B540035F3F1 /* .gitkeep */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
 		6571520B256966370035F3F1 /* CharacterListDataSource+CharactersSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CharacterListDataSource+CharactersSection.swift"; sourceTree = "<group>"; };
+		65715217256982810035F3F1 /* CharacterDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterDetailViewController.swift; sourceTree = "<group>"; };
+		6571521C256989BB0035F3F1 /* Other.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Other.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -260,8 +264,9 @@
 			children = (
 				6523A24825658A00009F808D /* Main.storyboard */,
 				657151FF25693B380035F3F1 /* supporting views */,
-				6561ABDD2568136A008E74EB /* Characters List */,
+				6561ABDD2568136A008E74EB /* Characters List screen */,
 				6561ABE625681459008E74EB /* Search screen */,
+				65715213256982200035F3F1 /* Character Detail screen */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -447,7 +452,7 @@
 			path = Repositories;
 			sourceTree = "<group>";
 		};
-		6561ABDD2568136A008E74EB /* Characters List */ = {
+		6561ABDD2568136A008E74EB /* Characters List screen */ = {
 			isa = PBXGroup;
 			children = (
 				6531E5E02568284300015D61 /* Supporting views */,
@@ -455,7 +460,7 @@
 				6561ABD525681338008E74EB /* CharactersTableViewController.swift */,
 				6561ABE125681391008E74EB /* CharactersListDataSource.swift */,
 			);
-			path = "Characters List";
+			path = "Characters List screen";
 			sourceTree = "<group>";
 		};
 		6561ABE625681459008E74EB /* Search screen */ = {
@@ -509,6 +514,7 @@
 				657151DF25692F900035F3F1 /* String+RemovingHTMLTags.swift */,
 				657151E7256930340035F3F1 /* String+Clean.swift */,
 				657151EC2569366D0035F3F1 /* String+MD5.swift */,
+				6571521C256989BB0035F3F1 /* Other.swift */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -528,6 +534,14 @@
 				6571520025693B540035F3F1 /* .gitkeep */,
 			);
 			path = "supporting views";
+			sourceTree = "<group>";
+		};
+		65715213256982200035F3F1 /* Character Detail screen */ = {
+			isa = PBXGroup;
+			children = (
+				65715217256982810035F3F1 /* CharacterDetailViewController.swift */,
+			);
+			path = "Character Detail screen";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -702,6 +716,7 @@
 				6571520C256966370035F3F1 /* CharacterListDataSource+CharactersSection.swift in Sources */,
 				6523A2CB2565920F009F808D /* EventSummary.swift in Sources */,
 				6561AB5D25668F37008E74EB /* ErrorOutput.swift in Sources */,
+				65715218256982810035F3F1 /* CharacterDetailViewController.swift in Sources */,
 				6523A296256590F8009F808D /* CharacterDataContainer.swift in Sources */,
 				6523A28325658B16009F808D /* CharacterDataWrapper.swift in Sources */,
 				6561AB652566B8D4008E74EB /* URLSessionDataTaskPublisher+MarvelValidate.swift in Sources */,
@@ -711,6 +726,7 @@
 				6561ABE92568148B008E74EB /* CharactersSearchTableViewController.swift in Sources */,
 				6561AC0E25682631008E74EB /* CharacterTableViewCell.swift in Sources */,
 				6561ABFE25681959008E74EB /* SearchTableViewCell.swift in Sources */,
+				6571521D256989BB0035F3F1 /* Other.swift in Sources */,
 				6523A2FA25659CF7009F808D /* MarvelCharacterOptionalQueryParameter+Details.swift in Sources */,
 				657151FB25693B1D0035F3F1 /* DiskImagesPoolController.swift in Sources */,
 				6523A2E9256598FC009F808D /* DataUtils.swift in Sources */,

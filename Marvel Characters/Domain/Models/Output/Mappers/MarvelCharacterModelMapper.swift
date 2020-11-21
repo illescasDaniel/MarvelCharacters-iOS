@@ -10,11 +10,17 @@ import Foundation
 class MarvelCharacterModelMapper {
 	
 	static func mapCharacterDataWrapperToCharacter(_ inputModel: MarvelDataModel.CharacterDataWrapper) -> MarvelCharacter {
+		if Other.attributionText.isEmpty {
+			Other.attributionText = inputModel.attributionText
+		}
 		let character = inputModel.data.results.first!
 		return mapDataCharacterToCharacter(character)
 	}
 	
 	static func mapCharacterDataWrapperToCharacters(_ inputModel: MarvelDataModel.CharacterDataWrapper) -> [MarvelCharacter] {
+		if Other.attributionText.isEmpty {
+			Other.attributionText = inputModel.attributionText
+		}
 		let characters = inputModel.data.results
 		return characters.map(mapDataCharacterToCharacter)
 	}
@@ -34,7 +40,9 @@ class MarvelCharacterModelMapper {
 			},
 			thumbnail: MarvelImage(path: inputModel.thumbnail.path.cleaned(), imageExtension: inputModel.thumbnail.imageExtension.cleaned())
 		)
-		MarvelCharacterMappingCache.shared.storeValue(mappedCharacter, id: inputModel.id)
+		if Constants.useAgressiveCaching {
+			MarvelCharacterMappingCache.shared.storeValue(mappedCharacter, id: inputModel.id)
+		}
 		return mappedCharacter
 	}
 }

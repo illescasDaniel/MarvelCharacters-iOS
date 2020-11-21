@@ -23,7 +23,7 @@ class CharactersTableViewController: UITableViewController {
 		self.dataSource.delegate = self
 		
 		self.title = "Marvel Characters"
-		self.navigationItem.prompt = "Data provided by Marvel. © 2020 MARVEL" // TODO: use the returned text instead ?
+		self.navigationItem.prompt = Other.attributionText // TODO: use the returned text instead ?
 		self.navigationItem.largeTitleDisplayMode = .always
 		self.navigationController?.navigationBar.prefersLargeTitles = true
 		
@@ -31,9 +31,10 @@ class CharactersTableViewController: UITableViewController {
 		
 		self.dataSource.loadData()
 		
-		let searchController = CharactersSearchTableViewController(nibName: "CharactersSearchTableViewController", bundle: .main)
+		let searchController = CharactersSearchTableViewController.build()
 		self.navigationItem.searchController = UISearchController(searchResultsController: searchController)
 		self.navigationItem.searchController?.searchResultsUpdater = searchController
+		self.navigationItem.searchController?.definesPresentationContext = true
 	}
 	
 	// MARK: - Table view data source
@@ -72,6 +73,11 @@ class CharactersTableViewController: UITableViewController {
 		return cell
 	}
 	
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		let character = self.dataSource.characterSections[indexPath.section].characters[indexPath.row]
+		self.performSegue(withIdentifier: Constants.SegueID.characterDetail.rawValue, sender: character)
+	}
+	
 	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		let charactersSection = self.dataSource.characterSections[section]
 		if charactersSection.characters.isEmpty {
@@ -87,22 +93,17 @@ class CharactersTableViewController: UITableViewController {
 		}
 	}
 	
-//	override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//		let maximumItemsNeeded = (indexPath.section + 1) * (indexPath.row + 1)
-//		if dataSource.charactersCount <= maximumItemsNeeded {
-//			dataSource.loadData()
-//		}
-//	}
-	
-	/*
 	// MARK: - Navigation
 	
 	// In a storyboard-based application, you will often want to do a little preparation before navigation
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-	// Get the new view controller using segue.destination.
-	// Pass the selected object to the new view controller.
+		guard let segueID = segue.identifier.flatMap(Constants.SegueID.init) else { return }
+		switch segueID {
+		case .characterDetail:
+			let characterVC = segue.destination as! CharacterDetailViewController
+			characterVC.setup(withCharacter: sender as! MarvelCharacter)
+		}
 	}
-	*/
 	
 	// MARK: Actions
 	

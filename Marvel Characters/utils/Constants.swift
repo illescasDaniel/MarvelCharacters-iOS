@@ -14,3 +14,15 @@ enum Constants {
 	static let useAgressiveCaching: Bool = true
 	static let charactersListPageSize: Int = 20
 }
+
+extension Constants {
+	enum SegueID: String {
+		case characterDetail = "CharacterDetail"
+	}
+}
+
+extension Constants {
+	enum StoryboardViewControllerID: String {
+		case characterDetail = "CharacterDetailViewController"
+	}
+}
