@@ -9,7 +9,6 @@ import Foundation
 #if canImport(ZippyJSON)
 import ZippyJSON
 #endif
-import CryptoKit
 
 class DataUtils {
 	
@@ -53,7 +52,7 @@ class DataUtils {
 		
 		let timestamp = String(Date().timeIntervalSince1970)
 		let hashedPrivateKeys = "\(timestamp)\(MarvelAPIConfig.privateApiKey)\(MarvelAPIConfig.publicApiKey)"
-		let md5HexString = MD5(string: hashedPrivateKeys)
+		let md5HexString = hashedPrivateKeys.md5HexString()
 		
 		return [
 			URLQueryItem(name: "apikey", value: MarvelAPIConfig.publicApiKey),
@@ -62,11 +61,4 @@ class DataUtils {
 		]
 	}
 	
-	private func MD5(string: String) -> String {
-		let digest = Insecure.MD5.hash(data: string.data(using: .utf8) ?? Data())
-
-		return digest.map {
-			String(format: "%02hhx", $0)
-		}.joined()
-	}
 }

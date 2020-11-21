@@ -13,11 +13,11 @@ class CharacterImagesController {
 
 	private var images: [Int: UIImage] = [:]
 	private var cachedImageForThumbnailURL: [String: UIImage] = [:]
-	private static var commonImagesPool: [String: [UIImage]] = [:]
 	private let charactersRepository: MarvelCharactersRepository = MarvelCharactersRepositoryImplementation()
 	private var cancellables: [Int: AnyCancellable] = [:]
 	
 	private var downloadedImagesIndexStream = PassthroughSubject<Int, Never>()
+	private let locker = NSLock()
 	
 	let imagesSize: CoreGraphics.CGFloat
 	
@@ -25,13 +25,13 @@ class CharacterImagesController {
 		self.imagesSize = imagesSize
 	}
 	
-	func downloadImage(_ thumbnailURL: String, forIndex index: Int) {
+	func downloadImage(_ thumbnailURL: String, withCommonPath path: String, forIndex index: Int) {
 		
 		if cancellables.keys.contains(index) {
 			return
 		}
 		
-		if let cachedImage = self.imageFor(thumbnailURL: thumbnailURL) {
+		if let cachedImage = self.imageFor(thumbnailURL: thumbnailURL, path: path) {
 			self.images[index] = cachedImage
 			self.cachedImageForThumbnailURL[thumbnailURL] = cachedImage
 			self.downloadedImagesIndexStream.send(index)
@@ -49,14 +49,8 @@ class CharacterImagesController {
 			self.cachedImageForThumbnailURL[thumbnailURL] = image
 			
 			if Constants.useAgressiveCaching {
-				let commonThumbnailURLPath = (thumbnailURL as NSString).deletingLastPathComponent
-				if let cachedImagesForURL = Self.commonImagesPool[thumbnailURL] {
-					if !cachedImagesForURL.contains(where: { $0.size.width == self.imagesSize }) {
-						Self.commonImagesPool[commonThumbnailURLPath] = cachedImagesForURL + [image]
-					}
-				} else {
-					Self.commonImagesPool[commonThumbnailURLPath] = [image]
-				}
+				CommonImagesPoolController.shared.save(image: image, forURLPath: path, withImageSize: self.imagesSize)
+				DiskImagesPoolController.shared.saveImageDataOnDisk(imageData: data, forURLPath: path, withImageSize: self.imagesSize)
 			}
 			self.downloadedImagesIndexStream.send(index)
 		})
@@ -66,27 +60,21 @@ class CharacterImagesController {
 		return images[index]
 	}
 	
-	private let locker = NSLock()
-	
-	func imageFor(thumbnailURL: String) -> UIImage? {
+	func imageFor(thumbnailURL: String, path: String) -> UIImage? {
 		locker.lock()
 		defer { locker.unlock() }
 		if let cachedImage = cachedImageForThumbnailURL[thumbnailURL] {
 			return cachedImage
 		}
 		if Constants.useAgressiveCaching {
-			let commonThumbnailURLPath = (thumbnailURL as NSString).deletingLastPathComponent
-			if let cachedImagesForURL = Self.commonImagesPool[commonThumbnailURLPath], !cachedImagesForURL.isEmpty {
-				if let cachedImageForSize = cachedImagesForURL.first(where: { $0.size.width == self.imagesSize }) {
-					print("used exact size image from common images pool")
-					return cachedImageForSize
-				}
-				if let alternativeBiggerImage = cachedImagesForURL.first(where: { $0.size.width > self.imagesSize }) {
-					print("found bigger image in common images pool")
-					let image = alternativeBiggerImage.resizeImage(self.imagesSize, opaque: true, contentMode: .scaleAspectFill)
-					Self.commonImagesPool[commonThumbnailURLPath] = cachedImagesForURL + [image]
-					return image
-				}
+			if let commonCachedImage = CommonImagesPoolController.shared.retrieveImage(forURLPath: path, forImageSize: self.imagesSize) {
+				return commonCachedImage
+			}
+			if let diskImageData = DiskImagesPoolController.shared.retrieveSavedImageDataOnDisk(forURLPath: path, withImageSize: self.imagesSize), let recoveredImage = UIImage(data: diskImageData) {
+				print("Using image data from disk")
+				let resizedImage = recoveredImage.resizeImage(self.imagesSize, opaque: true, contentMode: .scaleAspectFill)
+				CommonImagesPoolController.shared.save(image: resizedImage, forURLPath: path, withImageSize: self.imagesSize)
+				return resizedImage
 			}
 		}
 		return nil

@@ -69,6 +69,10 @@
 		657151D82569142C0035F3F1 /* MarvelImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657151D72569142C0035F3F1 /* MarvelImage.swift */; };
 		657151E025692F900035F3F1 /* String+RemovingHTMLTags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657151DF25692F900035F3F1 /* String+RemovingHTMLTags.swift */; };
 		657151E8256930340035F3F1 /* String+Clean.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657151E7256930340035F3F1 /* String+Clean.swift */; };
+		657151ED2569366D0035F3F1 /* String+MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657151EC2569366D0035F3F1 /* String+MD5.swift */; };
+		657151F325693AFF0035F3F1 /* CommonImagesPoolController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657151F225693AFF0035F3F1 /* CommonImagesPoolController.swift */; };
+		657151FB25693B1D0035F3F1 /* DiskImagesPoolController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657151FA25693B1D0035F3F1 /* DiskImagesPoolController.swift */; };
+		6571520125693B540035F3F1 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = 6571520025693B540035F3F1 /* .gitkeep */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -161,6 +165,10 @@
 		657151D72569142C0035F3F1 /* MarvelImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelImage.swift; sourceTree = "<group>"; };
 		657151DF25692F900035F3F1 /* String+RemovingHTMLTags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+RemovingHTMLTags.swift"; sourceTree = "<group>"; };
 		657151E7256930340035F3F1 /* String+Clean.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Clean.swift"; sourceTree = "<group>"; };
+		657151EC2569366D0035F3F1 /* String+MD5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+MD5.swift"; sourceTree = "<group>"; };
+		657151F225693AFF0035F3F1 /* CommonImagesPoolController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonImagesPoolController.swift; sourceTree = "<group>"; };
+		657151FA25693B1D0035F3F1 /* DiskImagesPoolController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskImagesPoolController.swift; sourceTree = "<group>"; };
+		6571520025693B540035F3F1 /* .gitkeep */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -249,6 +257,7 @@
 		6523A27525658A13009F808D /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				657151FF25693B380035F3F1 /* supporting views */,
 				6561ABDD2568136A008E74EB /* Characters List */,
 				6561ABE625681459008E74EB /* Search screen */,
 			);
@@ -260,6 +269,7 @@
 			children = (
 				6561ABC02566DCC3008E74EB /* Repositories */,
 				6523A28125658A6F009F808D /* Models */,
+				657151AB25682F610035F3F1 /* CharacterImagesController.swift */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -369,7 +379,6 @@
 			children = (
 				6531E5E3256828B100015D61 /* CharactersTableViewController+DataSourceDelegate.swift */,
 				657151A625682CE10035F3F1 /* CharactersTableViewController+PrefetchDataSource.swift */,
-				657151AB25682F610035F3F1 /* CharacterImagesController.swift */,
 			);
 			path = Details;
 			sourceTree = "<group>";
@@ -488,6 +497,7 @@
 		657151B4256843EE0035F3F1 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				657151F125693AC90035F3F1 /* Images cache */,
 				657151B5256843F80035F3F1 /* UIImage+Resize.swift */,
 				657151BA256848540035F3F1 /* Assets.swift */,
 				657151C225684C640035F3F1 /* Constants.swift */,
@@ -495,8 +505,26 @@
 				657151D225686BDD0035F3F1 /* MarvelCharacterMappingCache.swift */,
 				657151DF25692F900035F3F1 /* String+RemovingHTMLTags.swift */,
 				657151E7256930340035F3F1 /* String+Clean.swift */,
+				657151EC2569366D0035F3F1 /* String+MD5.swift */,
 			);
 			path = utils;
+			sourceTree = "<group>";
+		};
+		657151F125693AC90035F3F1 /* Images cache */ = {
+			isa = PBXGroup;
+			children = (
+				657151F225693AFF0035F3F1 /* CommonImagesPoolController.swift */,
+				657151FA25693B1D0035F3F1 /* DiskImagesPoolController.swift */,
+			);
+			path = "Images cache";
+			sourceTree = "<group>";
+		};
+		657151FF25693B380035F3F1 /* supporting views */ = {
+			isa = PBXGroup;
+			children = (
+				6571520025693B540035F3F1 /* .gitkeep */,
+			);
+			path = "supporting views";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -615,6 +643,7 @@
 				6561AC0F25682631008E74EB /* CharacterTableViewCell.xib in Resources */,
 				6523A24A25658A00009F808D /* Main.storyboard in Resources */,
 				6561ABFF25681959008E74EB /* SearchTableViewCell.xib in Resources */,
+				6571520125693B540035F3F1 /* .gitkeep in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -642,7 +671,9 @@
 				6561ABD12566F48E008E74EB /* Keys.m in Sources */,
 				6523A2FF25659D29009F808D /* APIRouterProtocol.swift in Sources */,
 				6561ABB32566DAE4008E74EB /* MarvelCharacter.swift in Sources */,
+				657151ED2569366D0035F3F1 /* String+MD5.swift in Sources */,
 				6523A2E025659432009F808D /* MarvelCharacterOptionalQueryParameter.swift in Sources */,
+				657151F325693AFF0035F3F1 /* CommonImagesPoolController.swift in Sources */,
 				6561ABE225681391008E74EB /* CharactersListDataSource.swift in Sources */,
 				6561ABCA2566DCE2008E74EB /* MarvelCharactersRepositoryImplementation.swift in Sources */,
 				6561ABF425681737008E74EB /* CharactersSearchTableViewController+UISearchResultsUpdating.swift in Sources */,
@@ -677,6 +708,7 @@
 				6561AC0E25682631008E74EB /* CharacterTableViewCell.swift in Sources */,
 				6561ABFE25681959008E74EB /* SearchTableViewCell.swift in Sources */,
 				6523A2FA25659CF7009F808D /* MarvelCharacterOptionalQueryParameter+Details.swift in Sources */,
+				657151FB25693B1D0035F3F1 /* DiskImagesPoolController.swift in Sources */,
 				6523A2E9256598FC009F808D /* DataUtils.swift in Sources */,
 				6523A24525658A00009F808D /* SceneDelegate.swift in Sources */,
 				6561AC0725681B5E008E74EB /* CharactersSearchTableViewController+DataSourceDelegate.swift in Sources */,

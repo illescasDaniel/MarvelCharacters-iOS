@@ -72,7 +72,7 @@ class CharactersListDataSource {
 	}
 	
 	func downloadThumbnail(_ thumbnail: MarvelImage, forIndex: Int) {
-		characterImagesController.downloadImage(thumbnail.imageURL(withQuality: marvelImageThumbnailQuality), forIndex: forIndex)
+		characterImagesController.downloadImage(thumbnail.imageURL(withQuality: marvelImageThumbnailQuality), withCommonPath: thumbnail.path, forIndex: forIndex)
 	}
 	
 	func thumbnail(forIndex index: Int) -> UIImage? {

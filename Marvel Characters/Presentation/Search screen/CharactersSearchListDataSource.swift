@@ -37,11 +37,12 @@ class CharactersSearchListDataSource {
 	}
 	
 	func downloadThumbnail(_ thumbnail: MarvelImage, forIndex: Int) {
-		characterImagesController.downloadImage(thumbnail.imageURL(withQuality: marvelImageThumbnailQuality), forIndex: forIndex)
+		characterImagesController.downloadImage(thumbnail.imageURL(withQuality: marvelImageThumbnailQuality), withCommonPath: thumbnail.path, forIndex: forIndex)
 	}
 	
 	func thumbnail(forIndex index: Int) -> UIImage? {
-		return characterImagesController.imageFor(thumbnailURL: characters[index].thumbnail.imageURL(withQuality: marvelImageThumbnailQuality))
+		let thumbnailInfo = characters[index].thumbnail
+		return characterImagesController.imageFor(thumbnailURL: thumbnailInfo.imageURL(withQuality: marvelImageThumbnailQuality), path: thumbnailInfo.path)
 	}
 	
 	func cancelRequests() {
