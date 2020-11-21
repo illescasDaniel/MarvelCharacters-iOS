@@ -73,6 +73,7 @@ class CharactersListDataSource {
 		cancelRequests()
 		characterImagesController.cancelRequests()
 		characterImagesController.cleanImagesByIndexPath()
+		self.charactersCount = 0
 		self.page = 0
 		self.charactersOrder.toggle()
 		setupSections()

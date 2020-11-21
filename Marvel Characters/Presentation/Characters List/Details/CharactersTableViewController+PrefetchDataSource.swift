@@ -14,7 +14,7 @@ extension CharactersTableViewController: UITableViewDataSourcePrefetching {
 		guard let lastRow = indexPaths.max() else { return }
 		DispatchQueue.global(qos: .background).async {
 			let maximumItemsNeeded = self.flatIndex(for: lastRow) + 1
-			if self.dataSource.charactersCount <= maximumItemsNeeded {
+			if maximumItemsNeeded >= self.dataSource.charactersCount {
 				self.dataSource.loadData()
 			}
 		}

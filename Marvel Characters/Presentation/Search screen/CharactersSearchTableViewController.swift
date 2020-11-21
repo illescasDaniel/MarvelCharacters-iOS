@@ -58,6 +58,13 @@ class CharactersSearchTableViewController: UITableViewController {
 		return cell
 	}
 	
+	override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+		// reached bottom
+		if scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height) {
+			self.dataSource.loadMoreData()
+		}
+	}
+	
 	/*
 	// MARK: - Navigation
 	

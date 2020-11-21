@@ -18,23 +18,31 @@ protocol CharactersSearchListDataSourceDelegate: class {
 
 class CharactersSearchListDataSource {
 	
+	// MARK: Properties
+	
 	weak var delegate: CharactersSearchListDataSourceDelegate?
 	
+	let searchTextStream = PassthroughSubject<String, Never>()
 	private(set) var characters: [MarvelCharacter] = []
 	
 	private let characterImagesController = CharacterImagesController(imagesSize: Constants.searchCharactersRowImageSize)
 	private let charactersRepository: MarvelCharactersRepository
 	private var cancellables: [AnyCancellable] = []
-	
-	var searchTextStream = PassthroughSubject<String, Never>()
-	
+	private var loadMoreDataCancellable: AnyCancellable?
+	private var paginatedCancellables: [Int: AnyCancellable] = [:]
+	private var page: Int = 0
+	private var currentSearchText: String = ""
 	private let marvelImageThumbnailQuality: MarvelImage.ThumbnailQuality = .standardMedium_100px
+	
+	// MARK: Initializers
 	
 	init(charactersRepository: MarvelCharactersRepository) {
 		self.charactersRepository = charactersRepository
 		setupSearchTextStream()
 		setupImageLoading()
 	}
+	
+	// MARK: Public methods
 	
 	func downloadThumbnail(_ thumbnail: MarvelImage, forIndexPath indexPath: IndexPath) {
 		self.characterImagesController.downloadImage(thumbnail.imageURL(withQuality: self.marvelImageThumbnailQuality), withCommonPath: thumbnail.path, forIndexPath: indexPath)
@@ -49,6 +57,40 @@ class CharactersSearchListDataSource {
 			$0.cancel()
 		}
 		self.cancellables.removeAll(keepingCapacity: true)
+	}
+	
+	func loadMoreData() {
+		guard self.currentSearchText.count > 1 else { return }
+		guard paginatedCancellables[self.page] == nil else { return }
+		
+		let request = self.charactersRepository.searchCharactersPaginated(startingWith: self.currentSearchText, page: self.page)
+		self.loadMoreDataCancellable = request.sink(receiveCompletion: { (completion) in
+			if case .failure(let error) = completion {
+				DispatchQueue.main.async {
+					self.delegate?.errorWithSearchResults(error)
+				}
+			}
+		}, receiveValue: { (moreCharacters) in
+			let currentNumberOfCharacters = self.characters.count
+			self.characters += moreCharacters
+			var indexPathsAndImageToLoad: [(MarvelImage, IndexPath)] = []
+			for (characterToAddThumbnail, index) in zip(moreCharacters, currentNumberOfCharacters..<self.characters.count) {
+				let indexPath = IndexPath(row: index, section: 0)
+				indexPathsAndImageToLoad.append((characterToAddThumbnail.thumbnail, indexPath))
+			}
+			
+			if moreCharacters.count == 20 /* limit */ {
+				self.page += 1
+			}
+			
+			DispatchQueue.main.async {
+				self.delegate?.reloadSearchListResults()
+				
+				indexPathsAndImageToLoad.forEach {
+					self.downloadThumbnail($0, forIndexPath: $1)
+				}
+			}
+		})
 	}
 	
 	// MARK: Convenience
@@ -74,6 +116,9 @@ class CharactersSearchListDataSource {
 	
 	private func updateCharacters(searchText: String) {
 		
+		self.currentSearchText = searchText
+		self.page = 0
+		
 		if searchText.isEmpty {
 			self.characters = []
 			self.delegate?.reloadSearchListResults()
@@ -81,13 +126,10 @@ class CharactersSearchListDataSource {
 		}
 		
 		self.charactersRepository.searchCharacters(startingWith: searchText).receive(on: RunLoop.main).sink(receiveCompletion: { (completion) in
-			switch completion {
-			case .failure(let error):
+			if case .failure(let error) = completion {
 				DispatchQueue.main.async {
 					self.delegate?.errorWithSearchResults(error)
 				}
-			case .finished:
-				break
 			}
 		}, receiveValue: { (characters) in
 			self.characterImagesController.cancelRequests()
@@ -96,6 +138,9 @@ class CharactersSearchListDataSource {
 				self.downloadThumbnail(characterToAddThumbnail.thumbnail, forIndexPath: IndexPath(row: index, section: 0))
 			}
 			self.characters = characters
+			if characters.count == 20 /* limit */ {
+				self.page += 1
+			}
 			self.delegate?.reloadSearchListResults()
 		})
 		.store(in: &self.cancellables)

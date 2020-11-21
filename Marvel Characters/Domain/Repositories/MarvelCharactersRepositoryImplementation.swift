@@ -54,7 +54,30 @@ class MarvelCharactersRepositoryImplementation: MarvelCharactersRepository {
 		let parameters = MarvelCharacterParameters.Builder()
 			.limit(20)
 			.nameStartsWith(prefix: namePrefix)
+			.orderBy(.ascending(.name))
 			.build()
+		return dataSource.characters(parameters: parameters)
+			.map { (originalData) -> [MarvelCharacter] in
+				let mappedData = MarvelCharacterModelMapper.mapCharacterDataWrapperToCharacters(originalData)
+				self.cachedSearches[namePrefix] = mappedData
+				return mappedData
+			}
+			.eraseToAnyPublisher()
+	}
+	
+	func searchCharactersPaginated(startingWith namePrefix: String, page: Int) -> AnyPublisher<[MarvelCharacter], Error> {
+		
+//		if let cachedResponse = self.cachedSearches[namePrefix] {
+//			print("Using cached response")
+//			return Just(cachedResponse).setFailureType(to: Error.self).eraseToAnyPublisher()
+//		}
+		
+		let parameters = MarvelCharacterParameters.Builder()
+			.page(page, limit: 20)
+			.nameStartsWith(prefix: namePrefix)
+			.orderBy(.ascending(.name))
+			.build()
+		
 		return dataSource.characters(parameters: parameters)
 			.map { (originalData) -> [MarvelCharacter] in
 				let mappedData = MarvelCharacterModelMapper.mapCharacterDataWrapperToCharacters(originalData)
