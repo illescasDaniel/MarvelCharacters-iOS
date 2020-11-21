@@ -14,6 +14,8 @@ protocol CharactersListDataSourceDelegate: class {
 	func reloadList()
 	func reloadRow(index: Int)
 	func reloadRows(at indexPaths: [IndexPath])
+	func didStartLoading()
+	func didFinishLoading()
 	func errorLoading(_ error: Error)
 }
 
@@ -23,6 +25,17 @@ class CharactersListDataSource {
 	
 	private(set) var characterSections: [CharacterSection] = []
 	private(set) var charactersCount: Int = 0
+	
+	enum CharactersOrder {
+		case ascending, descending
+		func opposite() -> CharactersOrder {
+			self == .ascending ? .descending : .ascending
+		}
+		mutating func toggle() {
+			self = opposite()
+		}
+	}
+	private var charactersOrder: CharactersOrder = .ascending
 	
 	private var page: Int = 0
 	
@@ -42,19 +55,44 @@ class CharactersListDataSource {
 	
 	init(charactersRepository: MarvelCharactersRepository) {
 		self.charactersRepository = charactersRepository
+		self.charactersOrder = .ascending
 		setupSections()
 		setupImageLoading()
 	}
 	
 	private func setupSections() {
-		self.characterSections = CharacterSection.Initial.allSortedAscending.map { .init(initial: $0, characters: []) }
+		switch self.charactersOrder {
+		case .ascending:
+			self.characterSections = CharacterSection.Initial.allSortedAscending.map { .init(initial: $0, characters: []) }
+		case .descending:
+			self.characterSections = CharacterSection.Initial.allSortedDescending.map { .init(initial: $0, characters: []) }
+		}
+	}
+	
+	func changeOrder() {
+		cancelRequests()
+		characterImagesController.cancelRequests()
+		characterImagesController.cleanImagesByIndexPath()
+		self.page = 0
+		self.charactersOrder.toggle()
+		setupSections()
+		self.delegate?.reloadList()
+		setupImageLoading()
+		loadData()
 	}
 	
 	func loadData() {
-		guard paginatedCancellables[page] == nil else { return }
-		print("PAGE: \(page)")
-		let request = charactersRepository.charactersSortedByNamePaginated(limit: Constants.charactersListPageSize, page: page)
-		paginatedCancellables[page] = request.sink(receiveCompletion: { (completion) in
+		guard paginatedCancellables[self.page] == nil else { return }
+		DispatchQueue.main.async {
+			self.delegate?.didStartLoading()
+		}
+		print("PAGE: \(self.page)")
+		let request = charactersRepository.charactersSortedByNamePaginated(
+			limit: Constants.charactersListPageSize,
+			page: self.page,
+			ascending: self.charactersOrder == .ascending
+		)
+		paginatedCancellables[self.page] = request.sink(receiveCompletion: { (completion) in
 			switch completion {
 			case .failure(let error):
 				DispatchQueue.main.async {
@@ -94,36 +132,40 @@ class CharactersListDataSource {
 				indexPathsAndThumbnailsForNewCharacters.forEach {
 					self.downloadThumbnail($0, forIndexPath: $1)
 				}
+				
+				self.delegate?.didFinishLoading()
 			}
 		})
 	}
 	
 	func downloadThumbnail(_ thumbnail: MarvelImage, forIndexPath indexPath: IndexPath) {
-		characterImagesController.downloadImage(thumbnail.imageURL(withQuality: marvelImageThumbnailQuality), withCommonPath: thumbnail.path, forIndexPath: indexPath)
+		self.characterImagesController.downloadImage(thumbnail.imageURL(withQuality: marvelImageThumbnailQuality), withCommonPath: thumbnail.path, forIndexPath: indexPath)
 	}
 	
 	func thumbnail(forIndex indexPath: IndexPath, orPath imagePath: MarvelImage) -> UIImage? {
-		return characterImagesController.imageFor(indexPath: indexPath) ?? self.imageThumbnail(forImagePath: imagePath)
+		return self.characterImagesController.imageFor(indexPath: indexPath) ?? self.imageThumbnail(forImagePath: imagePath)
 	}
 	
 	func imageThumbnail(forImagePath imagePath: MarvelImage) -> UIImage? {
-		return characterImagesController.imageFor(thumbnailURL: imagePath.imageURL(withQuality: marvelImageThumbnailQuality), path: imagePath.path)
+		return self.characterImagesController.imageFor(thumbnailURL: imagePath.imageURL(withQuality: marvelImageThumbnailQuality), path: imagePath.path)
 	}
 	
 	func cancelRequests() {
-		cancellables.forEach {
+		self.cancellables.forEach {
 			$0.cancel()
 		}
-		paginatedCancellables.forEach {
+		self.paginatedCancellables.forEach {
 			$0.value.cancel()
 		}
+		self.cancellables.removeAll(keepingCapacity: true)
+		self.paginatedCancellables.removeAll(keepingCapacity: true)
 	}
 	
 	// MARK: Convenience
 	
 	private func setupImageLoading() {
 		let imagesControllerPublisher = self.characterImagesController.publisher.collect(.byTimeOrCount(DispatchQueue.main, .milliseconds(500), 10))
-		cancellables.append(imagesControllerPublisher.receive(on: DispatchQueue.main).sink { (indexPathsToDelete) in
+		self.cancellables.append(imagesControllerPublisher.receive(on: DispatchQueue.main).sink { (indexPathsToDelete) in
 			self.delegate?.reloadRows(at: indexPathsToDelete)
 		})
 	}

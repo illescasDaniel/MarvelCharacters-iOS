@@ -33,11 +33,11 @@ class MarvelCharactersRepositoryImplementation: MarvelCharactersRepository {
 	
 	//
 	
-	func charactersSortedByNamePaginated(limit: Int, page: Int) -> AnyPublisher<[MarvelCharacter], Error> {
+	func charactersSortedByNamePaginated(limit: Int, page: Int, ascending: Bool) -> AnyPublisher<[MarvelCharacter], Error> {
 		let parameters = MarvelCharacterParameters.Builder()
 			.limit(limit)
 			.offset(limit * page)
-			.orderBy(.ascending(.name))
+			.orderBy(ascending ? .ascending(.name) : .descending(.name))
 			.build()
 		return dataSource.characters(parameters: parameters)
 			.map(MarvelCharacterModelMapper.mapCharacterDataWrapperToCharacters)

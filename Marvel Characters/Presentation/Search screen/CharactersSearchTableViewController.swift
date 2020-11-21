@@ -20,8 +20,8 @@ class CharactersSearchTableViewController: UITableViewController {
 		// Uncomment the following line to display an Edit button in the navigation bar for this view controller.
 		// self.navigationItem.rightBarButtonItem = self.editButtonItem
 		
-		dataSource.delegate = self
-		tableView.register(UINib(nibName: "SearchTableViewCell", bundle: .main), forCellReuseIdentifier: "searchCell")
+		self.dataSource.delegate = self
+		self.tableView.register(UINib(nibName: "SearchTableViewCell", bundle: .main), forCellReuseIdentifier: "searchCell")
 	}
 	
 	// MARK: - Table view data source
@@ -31,14 +31,13 @@ class CharactersSearchTableViewController: UITableViewController {
 	}
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return dataSource.characters.count
+		return self.dataSource.characters.count
 	}
-	
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "searchCell", for: indexPath) as! SearchTableViewCell
 		
-		let character = dataSource.characters[indexPath.row]
+		let character = self.dataSource.characters[indexPath.row]
 		cell.characterNameLabel.text = character.name
 		
 		if character.description.isEmpty {
@@ -49,11 +48,11 @@ class CharactersSearchTableViewController: UITableViewController {
 			cell.characterDescriptionLabel.text = String(character.description.prefix(100))
 		}
 		
-		if let thumbnail = dataSource.thumbnail(forImagePath: character.thumbnail) {
+		if let thumbnail = self.dataSource.thumbnail(forImagePath: character.thumbnail) {
 			cell.characterThumbnailImageView.image = thumbnail
 		} else {
 			cell.characterThumbnailImageView.image = Asset.smallPlaceholderImage
-			dataSource.downloadThumbnail(character.thumbnail, forIndexPath: indexPath)
+			self.dataSource.downloadThumbnail(character.thumbnail, forIndexPath: indexPath)
 		}
 		
 		return cell

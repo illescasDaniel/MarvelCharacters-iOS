@@ -29,7 +29,7 @@ class CharacterImagesController {
 	
 	func downloadImage(_ thumbnailURL: String, withCommonPath path: String, forIndexPath indexPath: IndexPath) {
 		
-		if cancellables.keys.contains(indexPath) {
+		if self.cancellables.keys.contains(indexPath) {
 			return
 		}
 		
@@ -59,13 +59,13 @@ class CharacterImagesController {
 	}
 	
 	func imageFor(indexPath: IndexPath) -> UIImage? {
-		return imagesIndexPath[indexPath]
+		return self.imagesIndexPath[indexPath]
 	}
 	
 	func imageFor(thumbnailURL: String, path: String) -> UIImage? {
 		locker.lock()
 		defer { locker.unlock() }
-		if let cachedImage = cachedImageForThumbnailURL[thumbnailURL] {
+		if let cachedImage = self.cachedImageForThumbnailURL[thumbnailURL] {
 			return cachedImage
 		}
 		if Constants.useAgressiveCaching {
@@ -83,14 +83,18 @@ class CharacterImagesController {
 	}
 	
 	var publisher: AnyPublisher<IndexPath, Never> {
-		downloadedImagesIndexPathStream.eraseToAnyPublisher()
+		self.downloadedImagesIndexPathStream.eraseToAnyPublisher()
 	}
 	
 	func cancelRequests() {
-		cancellables.values.forEach {
+		self.cancellables.values.forEach {
 			$0.cancel()
 		}
-		cancellables.removeAll(keepingCapacity: true)
+		self.cancellables.removeAll(keepingCapacity: true)
+	}
+	
+	func cleanImagesByIndexPath() {
+		self.imagesIndexPath.removeAll(keepingCapacity: true)
 	}
 	
 	deinit {

@@ -20,37 +20,37 @@ class CharactersTableViewController: UITableViewController {
 		// Uncomment the following line to display an Edit button in the navigation bar for this view controller.
 		// self.navigationItem.rightBarButtonItem = self.editButtonItem
 		
-		dataSource.delegate = self
+		self.dataSource.delegate = self
 		
-		title = "Marvel Characters"
-		navigationItem.prompt = "Data provided by Marvel. © 2020 MARVEL" // TODO: use the returned text instead ?
-		navigationItem.largeTitleDisplayMode = .always
-		navigationController?.navigationBar.prefersLargeTitles = true
+		self.title = "Marvel Characters"
+		self.navigationItem.prompt = "Data provided by Marvel. © 2020 MARVEL" // TODO: use the returned text instead ?
+		self.navigationItem.largeTitleDisplayMode = .always
+		self.navigationController?.navigationBar.prefersLargeTitles = true
 		
-		tableView.register(UINib(nibName: "CharacterTableViewCell", bundle: .main), forCellReuseIdentifier: "characterCell")
+		self.tableView.register(UINib(nibName: "CharacterTableViewCell", bundle: .main), forCellReuseIdentifier: "characterCell")
 		
-		dataSource.loadData()
+		self.dataSource.loadData()
 		
 		let searchController = CharactersSearchTableViewController(nibName: "CharactersSearchTableViewController", bundle: .main)
-		navigationItem.searchController = UISearchController(searchResultsController: searchController)
-		navigationItem.searchController?.searchResultsUpdater = searchController
+		self.navigationItem.searchController = UISearchController(searchResultsController: searchController)
+		self.navigationItem.searchController?.searchResultsUpdater = searchController
 	}
 	
 	// MARK: - Table view data source
 	
 	override func numberOfSections(in tableView: UITableView) -> Int {
-		return dataSource.characterSections.count
+		return self.dataSource.characterSections.count
 	}
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return dataSource.characterSections[section].characters.count
+		return self.dataSource.characterSections[section].characters.count
 	}
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
 		let cell = tableView.dequeueReusableCell(withIdentifier: "characterCell", for: indexPath) as! CharacterTableViewCell
 
-		let character = dataSource.characterSections[indexPath.section].characters[indexPath.row]
+		let character = self.dataSource.characterSections[indexPath.section].characters[indexPath.row]
 		
 		cell.characterNameLabel.text = character.name
 		
@@ -62,35 +62,18 @@ class CharactersTableViewController: UITableViewController {
 			cell.characterDescriptionLabel.text = self.view.frame.width > 1200 ? String(character.description.prefix(500)) : String(character.description.prefix(300))
 		}
 		
-		if let thumbnail = dataSource.imageThumbnail(forImagePath: character.thumbnail) {
+		if let thumbnail = self.dataSource.imageThumbnail(forImagePath: character.thumbnail) {
 			cell.characterThumbnailImageView.image = thumbnail
 		} else {
 			cell.characterThumbnailImageView.image = Asset.placeholderImage
-			dataSource.downloadThumbnail(character.thumbnail, forIndexPath: indexPath)
+			self.dataSource.downloadThumbnail(character.thumbnail, forIndexPath: indexPath)
 		}
 		
 		return cell
 	}
 	
-	func flatIndex(for indexPath: IndexPath) -> Int {
-		
-		guard indexPath.section != 0 else {
-			return indexPath.row
-		}
-		
-		var counter = 0
-		for section in 0...indexPath.section {
-			if section == indexPath.section {
-				counter += indexPath.row
-			} else {
-				counter += dataSource.characterSections[section].characters.count
-			}
-		}
-		return counter
-	}
-	
 	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		let charactersSection = dataSource.characterSections[section]
+		let charactersSection = self.dataSource.characterSections[section]
 		if charactersSection.characters.isEmpty {
 			return nil
 		}
@@ -98,10 +81,9 @@ class CharactersTableViewController: UITableViewController {
 	}
 	
 	override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-		
 		// reached bottom
 		if scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height) {
-			dataSource.loadData()
+			self.dataSource.loadData()
 		}
 	}
 	
@@ -122,4 +104,9 @@ class CharactersTableViewController: UITableViewController {
 	}
 	*/
 	
+	// MARK: Actions
+	
+	@IBAction func changeCharactersOrderAction(_ sender: UIBarButtonItem) {
+		self.dataSource.changeOrder()
+	}
 }

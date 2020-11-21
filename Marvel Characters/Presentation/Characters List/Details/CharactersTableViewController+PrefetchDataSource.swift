@@ -19,4 +19,21 @@ extension CharactersTableViewController: UITableViewDataSourcePrefetching {
 			}
 		}
 	}
+	
+	private func flatIndex(for indexPath: IndexPath) -> Int {
+		
+		guard indexPath.section != 0 else {
+			return indexPath.row
+		}
+		
+		var counter = 0
+		for section in 0...indexPath.section {
+			if section == indexPath.section {
+				counter += indexPath.row
+			} else {
+				counter += self.dataSource.characterSections[section].characters.count
+			}
+		}
+		return counter
+	}
 }

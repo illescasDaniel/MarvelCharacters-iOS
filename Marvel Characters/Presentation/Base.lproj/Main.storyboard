@@ -21,7 +21,13 @@
                             <outlet property="prefetchDataSource" destination="hg2-lZ-yIu" id="HhX-fK-YJZ"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="FqA-Vw-lgR"/>
+                    <navigationItem key="navigationItem" id="FqA-Vw-lgR">
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="arrow.up.arrow.down" catalog="system" id="16F-wk-cVj">
+                            <connections>
+                                <action selector="changeCharactersOrderAction:" destination="hg2-lZ-yIu" id="R70-7I-tYG"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zhf-tO-s94" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -47,6 +53,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="arrow.up.arrow.down" catalog="system" width="128" height="98"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

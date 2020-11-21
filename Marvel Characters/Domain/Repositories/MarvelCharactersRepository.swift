@@ -13,6 +13,6 @@ protocol MarvelCharactersRepository {
 	func characters(parameters: MarvelCharacterParameters) -> AnyPublisher<[MarvelCharacter], Error>
 	
 	func downloadCharacterThumbnail(_ thumbnailURL: URL) -> AnyPublisher<Data, URLError>
-	func charactersSortedByNamePaginated(limit: Int, page: Int) -> AnyPublisher<[MarvelCharacter], Error>
+	func charactersSortedByNamePaginated(limit: Int, page: Int, ascending: Bool) -> AnyPublisher<[MarvelCharacter], Error>
 	func searchCharacters(startingWith namePrefix: String) -> AnyPublisher<[MarvelCharacter], Error>
 }

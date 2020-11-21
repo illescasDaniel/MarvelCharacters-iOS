@@ -37,24 +37,24 @@ class CharactersSearchListDataSource {
 	}
 	
 	func downloadThumbnail(_ thumbnail: MarvelImage, forIndexPath indexPath: IndexPath) {
-		characterImagesController.downloadImage(thumbnail.imageURL(withQuality: marvelImageThumbnailQuality), withCommonPath: thumbnail.path, forIndexPath: indexPath)
+		self.characterImagesController.downloadImage(thumbnail.imageURL(withQuality: self.marvelImageThumbnailQuality), withCommonPath: thumbnail.path, forIndexPath: indexPath)
 	}
 	
 	func thumbnail(forImagePath imagePath: MarvelImage) -> UIImage? {
-		return characterImagesController.imageFor(thumbnailURL: imagePath.imageURL(withQuality: marvelImageThumbnailQuality), path: imagePath.path)
+		return self.characterImagesController.imageFor(thumbnailURL: imagePath.imageURL(withQuality: self.marvelImageThumbnailQuality), path: imagePath.path)
 	}
 	
 	func cancelRequests() {
-		cancellables.forEach {
+		self.cancellables.forEach {
 			$0.cancel()
 		}
-		cancellables.removeAll(keepingCapacity: true)
+		self.cancellables.removeAll(keepingCapacity: true)
 	}
 	
 	// MARK: Convenience
 	
 	private func setupSearchTextStream() {
-		searchTextStream.debounce(for: .milliseconds(Constants.searchDebounceDelay), scheduler: RunLoop.main).sink { (newSearchText) in
+		self.searchTextStream.debounce(for: .milliseconds(Constants.searchDebounceDelay), scheduler: RunLoop.main).sink { (newSearchText) in
 			if newSearchText.count > 1 {
 				self.updateCharacters(searchText: newSearchText)
 			} else {
@@ -62,12 +62,12 @@ class CharactersSearchListDataSource {
 				self.delegate?.reloadSearchListResults()
 			}
 		}
-		.store(in: &cancellables)
+		.store(in: &self.cancellables)
 	}
 	
 	private func setupImageLoading() {
 		let imagesControllerPublisher = self.characterImagesController.publisher.collect(.byTime(DispatchQueue.main, .milliseconds(300)))
-		cancellables.append(imagesControllerPublisher.receive(on: DispatchQueue.main).sink { (indexPathsToDelete) in
+		self.cancellables.append(imagesControllerPublisher.receive(on: DispatchQueue.main).sink { (indexPathsToDelete) in
 			self.delegate?.reloadRows(at: indexPathsToDelete)
 		})
 	}
@@ -80,7 +80,7 @@ class CharactersSearchListDataSource {
 			return
 		}
 		
-		charactersRepository.searchCharacters(startingWith: searchText).receive(on: RunLoop.main).sink(receiveCompletion: { (completion) in
+		self.charactersRepository.searchCharacters(startingWith: searchText).receive(on: RunLoop.main).sink(receiveCompletion: { (completion) in
 			switch completion {
 			case .failure(let error):
 				DispatchQueue.main.async {
@@ -91,13 +91,14 @@ class CharactersSearchListDataSource {
 			}
 		}, receiveValue: { (characters) in
 			self.characterImagesController.cancelRequests()
+			self.characterImagesController.cleanImagesByIndexPath()
 			for (characterToAddThumbnail, index) in zip(characters, 0..<characters.count) {
 				self.downloadThumbnail(characterToAddThumbnail.thumbnail, forIndexPath: IndexPath(row: index, section: 0))
 			}
 			self.characters = characters
 			self.delegate?.reloadSearchListResults()
 		})
-		.store(in: &cancellables)
+		.store(in: &self.cancellables)
 	}
 	
 	deinit {

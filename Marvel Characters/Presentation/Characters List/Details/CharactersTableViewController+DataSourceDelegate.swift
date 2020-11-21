@@ -33,4 +33,20 @@ extension CharactersTableViewController: CharactersListDataSourceDelegate {
 		self.present(errorAlertController, animated: true)
 	}
 	
+	func didStartLoading() {
+		if let activityIndicator = self.navigationItem.leftBarButtonItem?.customView as? UIActivityIndicatorView {
+			activityIndicator.startAnimating()
+		} else {
+			let activityIndicator = UIActivityIndicatorView(style: .medium)
+			activityIndicator.hidesWhenStopped = true
+			self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: activityIndicator)
+			activityIndicator.startAnimating()
+		}
+	}
+	
+	func didFinishLoading() {
+		if let activityIndicator = self.navigationItem.leftBarButtonItem?.customView as? UIActivityIndicatorView {
+			activityIndicator.stopAnimating()
+		}
+	}
 }
