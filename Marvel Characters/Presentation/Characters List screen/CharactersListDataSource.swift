@@ -39,7 +39,7 @@ class CharactersListDataSource {
 	
 	private var page: Int = 0
 	
-	private let characterImagesController = CharacterImagesController(imagesSize: Constants.charactersRowImageSize)
+	private let characterImagesController = CharacterImagesController(imagesSize: Constants.characterRowImageSize)
 	private let charactersRepository: MarvelCharactersRepository
 	private var paginatedCancellables: [Int: AnyCancellable] = [:]
 	private var cancellables: [AnyCancellable] = []

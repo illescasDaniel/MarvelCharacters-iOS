@@ -28,11 +28,11 @@ extension CharactersTableViewController: CharactersListDataSourceDelegate {
 		dump(error)
 		
 		let errorAlertController = UIAlertController(
-			title: "Error",
-			message: "Error while fetching characters.\nError Code:\((error as NSError).code)",
+			title: NSLocalizedString("Error", comment: "Generic error"),
+			message: String(format: NSLocalizedString("Error while fetching characters.\nError Code: %d", comment: "Error fetching marvel character"), (error as NSError).code),
 			preferredStyle: .alert
 		)
-		errorAlertController.addAction(.init(title: "OK", style: .default, handler: nil))
+		errorAlertController.addAction(.init(title: NSLocalizedString("OK", comment: "Generic OK message"), style: .default, handler: nil))
 		self.present(errorAlertController, animated: true)
 	}
 	

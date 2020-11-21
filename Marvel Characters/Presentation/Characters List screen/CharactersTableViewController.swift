@@ -11,6 +11,11 @@ class CharactersTableViewController: UITableViewController {
 	
 	let dataSource = CharactersListDataSource(charactersRepository: MarvelCharactersRepositoryImplementation())
 	
+	struct CharacterAndUIImage {
+		let character: MarvelCharacter
+		let image: UIImage?
+	}
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
@@ -22,8 +27,8 @@ class CharactersTableViewController: UITableViewController {
 		
 		self.dataSource.delegate = self
 		
-		self.title = "Marvel Characters"
-		self.navigationItem.prompt = Other.attributionText // TODO: use the returned text instead ?
+		self.title = NSLocalizedString("Marvel Characters", comment: "App title, used in main screen as its title")
+		self.navigationItem.prompt = Other.attributionText
 		self.navigationItem.largeTitleDisplayMode = .always
 		self.navigationController?.navigationBar.prefersLargeTitles = true
 		
@@ -75,7 +80,8 @@ class CharactersTableViewController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let character = self.dataSource.characterSections[indexPath.section].characters[indexPath.row]
-		self.performSegue(withIdentifier: Constants.SegueID.characterDetail.rawValue, sender: character)
+		let cellImage = (tableView.cellForRow(at: indexPath) as? SearchTableViewCell)?.characterThumbnailImageView.image
+		self.performSegue(withIdentifier: Constants.SegueID.characterDetail.rawValue, sender: CharacterAndUIImage(character: character, image: cellImage))
 	}
 	
 	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -101,7 +107,10 @@ class CharactersTableViewController: UITableViewController {
 		switch segueID {
 		case .characterDetail:
 			let characterVC = segue.destination as! CharacterDetailTableViewController
-			characterVC.setup(withCharacter: sender as! MarvelCharacter)
+			let characterAndImage = sender as! CharacterAndUIImage
+			let imageThumbnail = self.dataSource.imageThumbnail(forImagePath: characterAndImage.character.thumbnail)
+			let placeholderImage = imageThumbnail ?? characterAndImage.image ?? Asset.bigPlaceholderImage
+			characterVC.setup(withCharacter: characterAndImage.character, placeholderImage: placeholderImage)
 		}
 	}
 	

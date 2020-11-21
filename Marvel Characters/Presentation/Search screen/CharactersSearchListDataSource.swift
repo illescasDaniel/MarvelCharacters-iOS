@@ -25,7 +25,7 @@ class CharactersSearchListDataSource {
 	let searchTextStream = PassthroughSubject<String, Never>()
 	private(set) var characters: [MarvelCharacter] = []
 	
-	private let characterImagesController = CharacterImagesController(imagesSize: Constants.searchCharactersRowImageSize)
+	private let characterImagesController = CharacterImagesController(imagesSize: Constants.characterInSearchResultRowImageSize)
 	private let charactersRepository: MarvelCharactersRepository
 	private var cancellables: [AnyCancellable] = []
 	private var loadMoreDataCancellable: AnyCancellable?

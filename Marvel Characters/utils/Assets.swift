@@ -8,6 +8,7 @@
 import UIKit
 
 enum Asset {
-	static let placeholderImage = UIImage(named: "Placeholder")!.resizeImage(Constants.charactersRowImageSize, opaque: false, contentMode: .scaleAspectFit)
-	static let smallPlaceholderImage = UIImage(named: "Placeholder")!.resizeImage(Constants.searchCharactersRowImageSize, opaque: false, contentMode: .scaleAspectFit)
+	static let placeholderImage = UIImage(named: "Placeholder")!.resizeImage(Constants.characterRowImageSize, opaque: false, contentMode: .scaleAspectFit)
+	static let bigPlaceholderImage = UIImage(named: "Placeholder")!.resizeImage(Constants.characterDetailImageSize, opaque: false, contentMode: .scaleAspectFit)
+	static let smallPlaceholderImage = UIImage(named: "Placeholder")!.resizeImage(Constants.characterInSearchResultRowImageSize, opaque: false, contentMode: .scaleAspectFit)
 }

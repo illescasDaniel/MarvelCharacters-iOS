@@ -64,7 +64,9 @@ class CharactersSearchTableViewController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let character = self.dataSource.characters[indexPath.row]
-		let characterDetailVC = CharacterDetailTableViewController.build(withCharacter: character)
+		let cellImage = { (tableView.cellForRow(at: indexPath) as? SearchTableViewCell)?.characterThumbnailImageView.image }
+		let placeholderImage = self.dataSource.thumbnail(forImagePath: character.thumbnail) ?? cellImage() ?? Asset.bigPlaceholderImage
+		let characterDetailVC = CharacterDetailTableViewController.build(withCharacter: character, placeholderImage: placeholderImage)
 		self.presentingViewController?.navigationController?.pushViewController(characterDetailVC, animated: true)
 	}
 	

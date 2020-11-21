@@ -15,6 +15,7 @@ class CharacterImagesController {
 	private var cachedImageForThumbnailURL: [String: UIImage] = [:]
 	private let charactersRepository: MarvelCharactersRepository = MarvelCharactersRepositoryImplementation()
 	private var cancellables: [IndexPath: AnyCancellable] = [:]
+	private var otherCancellables: [AnyCancellable] = []
 	
 	private var downloadedImagesIndexStream = PassthroughSubject<Int, Never>()
 	private var downloadedImagesIndexPathStream = PassthroughSubject<IndexPath, Never>()
@@ -68,6 +69,28 @@ class CharacterImagesController {
 		}
 	}
 	
+	func downloadImage(_ thumbnailURL: String, withCommonPath path: String) -> AnyPublisher<UIImage, URLError> {
+		
+		if let cachedImage = self.retrieveImageFor(thumbnailURL: thumbnailURL, path: path) {
+			self.cachedImageForThumbnailURL[thumbnailURL] = cachedImage
+			return Just(cachedImage).setFailureType(to: URLError.self).eraseToAnyPublisher()
+		}
+		
+		let url = URL(string: thumbnailURL)!
+		return self.charactersRepository.downloadCharacterThumbnail(url).flatMap { (data) -> AnyPublisher<UIImage, URLError> in
+			guard let image = UIImage(data: data)?.resizeImage(self.imagesSize, opaque: true, contentMode: .scaleAspectFill) else {
+				return Fail(error: URLError(.cannotDecodeContentData)).eraseToAnyPublisher()
+			}
+			self.cachedImageForThumbnailURL[thumbnailURL] = image
+			
+			if Constants.useAgressiveCaching {
+				CommonImagesPoolController.shared.save(image: image, forURLPath: path, withImageSize: self.imagesSize)
+				DiskImagesPoolController.shared.saveImageDataOnDisk(imageData: data, forURLPath: path, withImageSize: self.imagesSize)
+			}
+			return Just(image).setFailureType(to: URLError.self).eraseToAnyPublisher()
+		}.eraseToAnyPublisher()
+	}
+	
 	func imageFor(indexPath: IndexPath) -> UIImage? {
 		return self.imagesIndexPath[indexPath]
 	}
@@ -82,6 +105,30 @@ class CharacterImagesController {
 			if let commonCachedImage = CommonImagesPoolController.shared.retrieveImage(forURLPath: path, forImageSize: self.imagesSize) {
 				return commonCachedImage
 			}
+		}
+		return nil
+	}
+	
+	private func retrieveImageFor(thumbnailURL: String, path: String) -> UIImage? {
+		locker.lock()
+		defer { locker.unlock() }
+		if let cachedImage = self.cachedImageForThumbnailURL[thumbnailURL] {
+			return cachedImage
+		}
+		if Constants.useAgressiveCaching {
+			if let commonCachedImage = CommonImagesPoolController.shared.retrieveImage(forURLPath: path, forImageSize: self.imagesSize) {
+				return commonCachedImage
+			}
+//			if let imageDataFromDisk = DiskImagesPoolController.shared.retrieveSavedImageDataOnDisk(forURLPath: path, withImageSize: self.imagesSize),
+//			   let image = UIImage(data: imageDataFromDisk)?.resizeImage(self.imagesSize, opaque: true, contentMode: .scaleAspectFill) {
+//				
+//				self.locker.lock()
+//				defer { self.locker.unlock() }
+//				print("Using image data from disk (sync)")
+//				self.cachedImageForThumbnailURL[thumbnailURL] = image
+//				CommonImagesPoolController.shared.save(image: image, forURLPath: path, withImageSize: self.imagesSize)
+//				return image
+//			}
 		}
 		return nil
 	}
@@ -121,7 +168,7 @@ class CharacterImagesController {
 	}
 	
 	lazy var defaultAssetImage: UIImage = {
-		self.imagesSize == Constants.searchCharactersRowImageSize ? Asset.smallPlaceholderImage : Asset.placeholderImage
+		self.imagesSize == Constants.characterInSearchResultRowImageSize ? Asset.smallPlaceholderImage : Asset.placeholderImage
 	}()
 	
 	func cancelRequests() {
@@ -129,6 +176,10 @@ class CharacterImagesController {
 			$0.cancel()
 		}
 		self.cancellables.removeAll(keepingCapacity: true)
+		self.otherCancellables.forEach {
+			$0.cancel()
+		}
+		self.otherCancellables.removeAll(keepingCapacity: true)
 	}
 	
 	func cleanImagesByIndexPath() {
