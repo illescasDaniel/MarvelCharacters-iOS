@@ -17,12 +17,8 @@ extension CharactersTableViewController: CharactersListDataSourceDelegate {
 		self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
 	}
 	
-	func reloadRows(indices: [Int]) {
-		guard let visibleRows = self.tableView.indexPathsForVisibleRows else { return }
-		self.tableView.beginUpdates()
-		let rowsToReload = Set(visibleRows).intersection(Set(indices.map({ IndexPath(row: $0, section: 0) })))
-		self.tableView.reloadRows(at: Array(rowsToReload), with: .none)
-		self.tableView.endUpdates()
+	func reloadRows(at indexPaths: [IndexPath]) {
+		self.tableView.reloadRows(at: indexPaths, with: .none)
 	}
 	
 	func errorLoading(_ error: Error) {

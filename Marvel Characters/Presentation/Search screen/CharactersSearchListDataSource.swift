@@ -12,7 +12,7 @@ import class UIKit.UIScreen
 
 protocol CharactersSearchListDataSourceDelegate: class {
 	func reloadSearchListResults()
-	func reloadRows(indices: [Int])
+	func reloadRows(at indexPaths: [IndexPath])
 	func errorWithSearchResults(_ error: Error)
 }
 
@@ -36,20 +36,19 @@ class CharactersSearchListDataSource {
 		setupImageLoading()
 	}
 	
-	func downloadThumbnail(_ thumbnail: MarvelImage, forIndex: Int) {
-		characterImagesController.downloadImage(thumbnail.imageURL(withQuality: marvelImageThumbnailQuality), withCommonPath: thumbnail.path, forIndex: forIndex)
+	func downloadThumbnail(_ thumbnail: MarvelImage, forIndexPath indexPath: IndexPath) {
+		characterImagesController.downloadImage(thumbnail.imageURL(withQuality: marvelImageThumbnailQuality), withCommonPath: thumbnail.path, forIndexPath: indexPath)
 	}
 	
-	func thumbnail(forIndex index: Int) -> UIImage? {
-		let thumbnailInfo = characters[index].thumbnail
-		return characterImagesController.imageFor(thumbnailURL: thumbnailInfo.imageURL(withQuality: marvelImageThumbnailQuality), path: thumbnailInfo.path)
+	func thumbnail(forImagePath imagePath: MarvelImage) -> UIImage? {
+		return characterImagesController.imageFor(thumbnailURL: imagePath.imageURL(withQuality: marvelImageThumbnailQuality), path: imagePath.path)
 	}
 	
 	func cancelRequests() {
 		cancellables.forEach {
 			$0.cancel()
 		}
-		cancellables.removeAll()
+		cancellables.removeAll(keepingCapacity: true)
 	}
 	
 	// MARK: Convenience
@@ -68,8 +67,8 @@ class CharactersSearchListDataSource {
 	
 	private func setupImageLoading() {
 		let imagesControllerPublisher = self.characterImagesController.publisher.collect(.byTime(DispatchQueue.main, .milliseconds(300)))
-		cancellables.append(imagesControllerPublisher.receive(on: DispatchQueue.main).sink { (rowIndicesToReload) in
-			self.delegate?.reloadRows(indices: rowIndicesToReload)
+		cancellables.append(imagesControllerPublisher.receive(on: DispatchQueue.main).sink { (indexPathsToDelete) in
+			self.delegate?.reloadRows(at: indexPathsToDelete)
 		})
 	}
 	
@@ -93,7 +92,7 @@ class CharactersSearchListDataSource {
 		}, receiveValue: { (characters) in
 			self.characterImagesController.cancelRequests()
 			for (characterToAddThumbnail, index) in zip(characters, 0..<characters.count) {
-				self.downloadThumbnail(characterToAddThumbnail.thumbnail, forIndex: index)
+				self.downloadThumbnail(characterToAddThumbnail.thumbnail, forIndexPath: IndexPath(row: index, section: 0))
 			}
 			self.characters = characters
 			self.delegate?.reloadSearchListResults()

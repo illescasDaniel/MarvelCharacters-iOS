@@ -11,10 +11,12 @@ extension CharactersTableViewController: UITableViewDataSourcePrefetching {
 	
 	func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
 		print("prefetch rows at \(indexPaths)")
-		guard let lastRow = indexPaths.last?.row else { return }
-		let maximumItemsNeeded = lastRow + 1
-		if dataSource.characters.count <= maximumItemsNeeded {
-			dataSource.loadData()
+		guard let lastRow = indexPaths.max() else { return }
+		DispatchQueue.global(qos: .background).async {
+			let maximumItemsNeeded = self.flatIndex(for: lastRow) + 1
+			if self.dataSource.charactersCount <= maximumItemsNeeded {
+				self.dataSource.loadData()
+			}
 		}
 	}
 }

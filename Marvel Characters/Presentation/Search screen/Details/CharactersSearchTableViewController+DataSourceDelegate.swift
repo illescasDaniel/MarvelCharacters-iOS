@@ -13,12 +13,13 @@ extension CharactersSearchTableViewController: CharactersSearchListDataSourceDel
 		self.tableView.reloadData()
 	}
 	
-	func reloadRows(indices: [Int]) {
-		guard let visibleRows = self.tableView.indexPathsForVisibleRows else { return }
-		self.tableView.beginUpdates()
-		let rowsToReload = Set(visibleRows).intersection(Set(indices.map({ IndexPath(row: $0, section: 0) })))
-		self.tableView.reloadRows(at: Array(rowsToReload), with: .none)
-		self.tableView.endUpdates()
+	func reloadRows(at indexPaths: [IndexPath]) {
+		self.tableView.reloadRows(at: indexPaths, with: .none)
+//		guard let visibleRows = self.tableView.indexPathsForVisibleRows else { return }
+//		self.tableView.beginUpdates()
+//		let rowsToReload = Set(visibleRows).intersection(Set(indices.map({ IndexPath(row: $0, section: 0) })))
+//		self.tableView.reloadRows(at: Array(rowsToReload), with: .none)
+//		self.tableView.endUpdates()
 	}
 	
 	func errorWithSearchResults(_ error: Error) {

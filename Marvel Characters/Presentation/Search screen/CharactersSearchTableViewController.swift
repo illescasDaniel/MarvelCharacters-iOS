@@ -49,11 +49,11 @@ class CharactersSearchTableViewController: UITableViewController {
 			cell.characterDescriptionLabel.text = String(character.description.prefix(100))
 		}
 		
-		if let thumbnail = dataSource.thumbnail(forIndex: indexPath.row) {
+		if let thumbnail = dataSource.thumbnail(forImagePath: character.thumbnail) {
 			cell.characterThumbnailImageView.image = thumbnail
 		} else {
 			cell.characterThumbnailImageView.image = Asset.smallPlaceholderImage
-			dataSource.downloadThumbnail(character.thumbnail, forIndex: indexPath.row)
+			dataSource.downloadThumbnail(character.thumbnail, forIndexPath: indexPath)
 		}
 		
 		return cell

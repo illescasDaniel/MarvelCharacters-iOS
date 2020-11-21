@@ -13,7 +13,7 @@ import class UIKit.UIScreen
 protocol CharactersListDataSourceDelegate: class {
 	func reloadList()
 	func reloadRow(index: Int)
-	func reloadRows(indices: [Int])
+	func reloadRows(at indexPaths: [IndexPath])
 	func errorLoading(_ error: Error)
 }
 
@@ -21,7 +21,9 @@ class CharactersListDataSource {
 	
 	weak var delegate: CharactersListDataSourceDelegate?
 	
-	private(set) var characters: [MarvelCharacter] = []
+	private(set) var characterSections: [CharacterSection] = []
+	private(set) var charactersCount: Int = 0
+	
 	private var page: Int = 0
 	
 	private let characterImagesController = CharacterImagesController(imagesSize: Constants.charactersRowImageSize)
@@ -40,14 +42,19 @@ class CharactersListDataSource {
 	
 	init(charactersRepository: MarvelCharactersRepository) {
 		self.charactersRepository = charactersRepository
+		setupSections()
 		setupImageLoading()
+	}
+	
+	private func setupSections() {
+		self.characterSections = CharacterSection.Initial.allSortedAscending.map { .init(initial: $0, characters: []) }
 	}
 	
 	func loadData() {
 		guard paginatedCancellables[page] == nil else { return }
 		print("PAGE: \(page)")
 		let request = charactersRepository.charactersSortedByNamePaginated(limit: Constants.charactersListPageSize, page: page)
-		paginatedCancellables[page] = request.receive(on: DispatchQueue.main).sink(receiveCompletion: { (completion) in
+		paginatedCancellables[page] = request.sink(receiveCompletion: { (completion) in
 			switch completion {
 			case .failure(let error):
 				DispatchQueue.main.async {
@@ -58,25 +65,49 @@ class CharactersListDataSource {
 			}
 		}, receiveValue: { (characters) in
 			
-			let currentNumberOfCharacters = self.characters.count
-			self.characters += characters
-			for (characterToAddThumbnail, index) in zip(characters, currentNumberOfCharacters..<(currentNumberOfCharacters + characters.count)) {
-				self.downloadThumbnail(characterToAddThumbnail.thumbnail, forIndex: index)
+			self.charactersCount += characters.count
+			
+			var indexPathsAndThumbnailsForNewCharacters: [(MarvelImage, IndexPath)] = []
+			
+			for character in characters {
+				if let firstCharacter = character.name.first, !firstCharacter.isNumber {
+					let characterInitial = String(firstCharacter).folding(options: .diacriticInsensitive, locale: nil).lowercased()
+					let charactersSectionIndex = self.characterSections.firstIndex(where: { $0.initial.rawValue == characterInitial }) ?? 0
+					self.characterSections[charactersSectionIndex].characters.append(character)
+					
+					let row = self.characterSections[charactersSectionIndex].characters.count
+					indexPathsAndThumbnailsForNewCharacters.append((character.thumbnail, IndexPath(row: row - 1, section: charactersSectionIndex)))
+				} else {
+					self.characterSections[0].characters.append(character)
+					let row = self.characterSections[0].characters.count
+					indexPathsAndThumbnailsForNewCharacters.append((character.thumbnail, IndexPath(row: row - 1, section: 0)))
+				}
 			}
 			
-			if !self.characters.isEmpty {
+			if !characters.isEmpty {
 				self.page += 1
 			}
-			self.delegate?.reloadList()
+			
+			DispatchQueue.main.async {
+				self.delegate?.reloadList()
+				
+				indexPathsAndThumbnailsForNewCharacters.forEach {
+					self.downloadThumbnail($0, forIndexPath: $1)
+				}
+			}
 		})
 	}
 	
-	func downloadThumbnail(_ thumbnail: MarvelImage, forIndex: Int) {
-		characterImagesController.downloadImage(thumbnail.imageURL(withQuality: marvelImageThumbnailQuality), withCommonPath: thumbnail.path, forIndex: forIndex)
+	func downloadThumbnail(_ thumbnail: MarvelImage, forIndexPath indexPath: IndexPath) {
+		characterImagesController.downloadImage(thumbnail.imageURL(withQuality: marvelImageThumbnailQuality), withCommonPath: thumbnail.path, forIndexPath: indexPath)
 	}
 	
-	func thumbnail(forIndex index: Int) -> UIImage? {
-		return characterImagesController.imageFor(index: index)
+	func thumbnail(forIndex indexPath: IndexPath, orPath imagePath: MarvelImage) -> UIImage? {
+		return characterImagesController.imageFor(indexPath: indexPath) ?? self.imageThumbnail(forImagePath: imagePath)
+	}
+	
+	func imageThumbnail(forImagePath imagePath: MarvelImage) -> UIImage? {
+		return characterImagesController.imageFor(thumbnailURL: imagePath.imageURL(withQuality: marvelImageThumbnailQuality), path: imagePath.path)
 	}
 	
 	func cancelRequests() {
@@ -92,8 +123,8 @@ class CharactersListDataSource {
 	
 	private func setupImageLoading() {
 		let imagesControllerPublisher = self.characterImagesController.publisher.collect(.byTimeOrCount(DispatchQueue.main, .milliseconds(500), 10))
-		cancellables.append(imagesControllerPublisher.receive(on: DispatchQueue.main).sink { (rowIndicesToReload) in
-			self.delegate?.reloadRows(indices: rowIndicesToReload)
+		cancellables.append(imagesControllerPublisher.receive(on: DispatchQueue.main).sink { (indexPathsToDelete) in
+			self.delegate?.reloadRows(at: indexPathsToDelete)
 		})
 	}
 	

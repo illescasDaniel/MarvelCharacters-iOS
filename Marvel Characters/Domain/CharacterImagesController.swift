@@ -11,12 +11,14 @@ import Combine
 
 class CharacterImagesController {
 
-	private var images: [Int: UIImage] = [:]
+	private var imagesIndexPath: [IndexPath: UIImage] = [:]
 	private var cachedImageForThumbnailURL: [String: UIImage] = [:]
 	private let charactersRepository: MarvelCharactersRepository = MarvelCharactersRepositoryImplementation()
-	private var cancellables: [Int: AnyCancellable] = [:]
+	private var cancellables: [IndexPath: AnyCancellable] = [:]
 	
 	private var downloadedImagesIndexStream = PassthroughSubject<Int, Never>()
+	private var downloadedImagesIndexPathStream = PassthroughSubject<IndexPath, Never>()
+	
 	private let locker = NSLock()
 	
 	let imagesSize: CoreGraphics.CGFloat
@@ -25,39 +27,39 @@ class CharacterImagesController {
 		self.imagesSize = imagesSize
 	}
 	
-	func downloadImage(_ thumbnailURL: String, withCommonPath path: String, forIndex index: Int) {
+	func downloadImage(_ thumbnailURL: String, withCommonPath path: String, forIndexPath indexPath: IndexPath) {
 		
-		if cancellables.keys.contains(index) {
+		if cancellables.keys.contains(indexPath) {
 			return
 		}
 		
 		if let cachedImage = self.imageFor(thumbnailURL: thumbnailURL, path: path) {
-			self.images[index] = cachedImage
+			self.imagesIndexPath[indexPath] = cachedImage
 			self.cachedImageForThumbnailURL[thumbnailURL] = cachedImage
-			self.downloadedImagesIndexStream.send(index)
+			self.downloadedImagesIndexPathStream.send(indexPath)
 			return
 		}
 		
 		let url = URL(string: thumbnailURL)!
-		cancellables[index] = charactersRepository.downloadCharacterThumbnail(url).sink(receiveCompletion: { (completion) in
+		cancellables[indexPath] = charactersRepository.downloadCharacterThumbnail(url).sink(receiveCompletion: { (completion) in
 			if case .failure = completion {
-				self.images[index] = Asset.placeholderImage
+				self.imagesIndexPath[indexPath] = Asset.placeholderImage
 			}
 		}, receiveValue: { (data) in
 			guard let image = UIImage(data: data)?.resizeImage(self.imagesSize, opaque: true, contentMode: .scaleAspectFill) else { return }
-			self.images[index] = image
+			self.imagesIndexPath[indexPath] = image
 			self.cachedImageForThumbnailURL[thumbnailURL] = image
 			
 			if Constants.useAgressiveCaching {
 				CommonImagesPoolController.shared.save(image: image, forURLPath: path, withImageSize: self.imagesSize)
 				DiskImagesPoolController.shared.saveImageDataOnDisk(imageData: data, forURLPath: path, withImageSize: self.imagesSize)
 			}
-			self.downloadedImagesIndexStream.send(index)
+			self.downloadedImagesIndexPathStream.send(indexPath)
 		})
 	}
 	
-	func imageFor(index: Int) -> UIImage? {
-		return images[index]
+	func imageFor(indexPath: IndexPath) -> UIImage? {
+		return imagesIndexPath[indexPath]
 	}
 	
 	func imageFor(thumbnailURL: String, path: String) -> UIImage? {
@@ -80,8 +82,8 @@ class CharacterImagesController {
 		return nil
 	}
 	
-	var publisher: AnyPublisher<Int, Never> {
-		downloadedImagesIndexStream.eraseToAnyPublisher()
+	var publisher: AnyPublisher<IndexPath, Never> {
+		downloadedImagesIndexPathStream.eraseToAnyPublisher()
 	}
 	
 	func cancelRequests() {

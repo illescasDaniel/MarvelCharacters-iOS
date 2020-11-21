@@ -39,18 +39,19 @@ class CharactersTableViewController: UITableViewController {
 	// MARK: - Table view data source
 	
 	override func numberOfSections(in tableView: UITableView) -> Int {
-		return 1
+		return dataSource.characterSections.count
 	}
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return dataSource.characters.count
+		return dataSource.characterSections[section].characters.count
 	}
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
 		let cell = tableView.dequeueReusableCell(withIdentifier: "characterCell", for: indexPath) as! CharacterTableViewCell
+
+		let character = dataSource.characterSections[indexPath.section].characters[indexPath.row]
 		
-		let character = dataSource.characters[indexPath.row]
 		cell.characterNameLabel.text = character.name
 		
 		if character.description.isEmpty {
@@ -61,22 +62,55 @@ class CharactersTableViewController: UITableViewController {
 			cell.characterDescriptionLabel.text = self.view.frame.width > 1200 ? String(character.description.prefix(500)) : String(character.description.prefix(300))
 		}
 		
-		if let thumbnail = dataSource.thumbnail(forIndex: indexPath.row) {
+		if let thumbnail = dataSource.imageThumbnail(forImagePath: character.thumbnail) {
 			cell.characterThumbnailImageView.image = thumbnail
 		} else {
 			cell.characterThumbnailImageView.image = Asset.placeholderImage
-			dataSource.downloadThumbnail(character.thumbnail, forIndex: indexPath.row)
+			dataSource.downloadThumbnail(character.thumbnail, forIndexPath: indexPath)
 		}
 		
 		return cell
 	}
 	
-	override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-		let maximumItemsNeeded = indexPath.row + 1
-		if dataSource.characters.count <= maximumItemsNeeded {
+	func flatIndex(for indexPath: IndexPath) -> Int {
+		
+		guard indexPath.section != 0 else {
+			return indexPath.row
+		}
+		
+		var counter = 0
+		for section in 0...indexPath.section {
+			if section == indexPath.section {
+				counter += indexPath.row
+			} else {
+				counter += dataSource.characterSections[section].characters.count
+			}
+		}
+		return counter
+	}
+	
+	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+		let charactersSection = dataSource.characterSections[section]
+		if charactersSection.characters.isEmpty {
+			return nil
+		}
+		return charactersSection.initial.displayString
+	}
+	
+	override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+		
+		// reached bottom
+		if scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height) {
 			dataSource.loadData()
 		}
 	}
+	
+//	override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+//		let maximumItemsNeeded = (indexPath.section + 1) * (indexPath.row + 1)
+//		if dataSource.charactersCount <= maximumItemsNeeded {
+//			dataSource.loadData()
+//		}
+//	}
 	
 	/*
 	// MARK: - Navigation
