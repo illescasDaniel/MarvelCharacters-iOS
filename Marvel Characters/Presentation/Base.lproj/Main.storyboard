@@ -3,7 +3,6 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -30,31 +29,41 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <segue destination="UGx-ui-dKn" kind="show" identifier="CharacterDetail" id="iW1-MG-PYY"/>
+                        <segue destination="qVU-v0-g34" kind="show" identifier="CharacterDetail" id="pTQ-HP-sB1"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zhf-tO-s94" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1871.0144927536232" y="71.651785714285708"/>
         </scene>
-        <!--Character Detail View Controller-->
-        <scene sceneID="cfK-XQ-5Zn">
+        <!--Character Detail Table View Controller-->
+        <scene sceneID="DiB-5c-SLY">
             <objects>
-                <viewController storyboardIdentifier="CharacterDetailViewController" id="UGx-ui-dKn" customClass="CharacterDetailViewController" customModule="Marvel_Characters" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="l7o-uQ-qtD">
+                <tableViewController storyboardIdentifier="CharacterDetailViewController" id="qVU-v0-g34" customClass="CharacterDetailTableViewController" customModule="Marvel_Characters" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="f5I-Rb-bYl">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="btN-t8-tQM"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="m5i-L7-gA5">
-                        <nil key="title"/>
-                        <barButtonItem key="backBarButtonItem" title="Back" id="wIA-ZO-KEW"/>
-                    </navigationItem>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="1WB-zF-fWi" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="gKi-pX-yIV">
+                                <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="gKi-pX-yIV" id="Dim-GV-03d">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="qVU-v0-g34" id="548-GE-qpd"/>
+                            <outlet property="delegate" destination="qVU-v0-g34" id="5EF-7h-via"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="tOX-sa-aer"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WhR-Fb-Gak" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2764" y="72"/>
+            <point key="canvasLocation" x="2916" y="72"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="bNM-Im-yHH">

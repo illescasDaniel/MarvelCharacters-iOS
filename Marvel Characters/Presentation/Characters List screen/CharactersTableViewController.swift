@@ -100,7 +100,7 @@ class CharactersTableViewController: UITableViewController {
 		guard let segueID = segue.identifier.flatMap(Constants.SegueID.init) else { return }
 		switch segueID {
 		case .characterDetail:
-			let characterVC = segue.destination as! CharacterDetailViewController
+			let characterVC = segue.destination as! CharacterDetailTableViewController
 			characterVC.setup(withCharacter: sender as! MarvelCharacter)
 		}
 	}

@@ -74,8 +74,8 @@
 		657151FB25693B1D0035F3F1 /* DiskImagesPoolController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657151FA25693B1D0035F3F1 /* DiskImagesPoolController.swift */; };
 		6571520125693B540035F3F1 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = 6571520025693B540035F3F1 /* .gitkeep */; };
 		6571520C256966370035F3F1 /* CharacterListDataSource+CharactersSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6571520B256966370035F3F1 /* CharacterListDataSource+CharactersSection.swift */; };
-		65715218256982810035F3F1 /* CharacterDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65715217256982810035F3F1 /* CharacterDetailViewController.swift */; };
 		6571521D256989BB0035F3F1 /* Other.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6571521C256989BB0035F3F1 /* Other.swift */; };
+		6571522225698CA50035F3F1 /* CharacterDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6571522125698CA50035F3F1 /* CharacterDetailTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -173,8 +173,8 @@
 		657151FA25693B1D0035F3F1 /* DiskImagesPoolController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskImagesPoolController.swift; sourceTree = "<group>"; };
 		6571520025693B540035F3F1 /* .gitkeep */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
 		6571520B256966370035F3F1 /* CharacterListDataSource+CharactersSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CharacterListDataSource+CharactersSection.swift"; sourceTree = "<group>"; };
-		65715217256982810035F3F1 /* CharacterDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterDetailViewController.swift; sourceTree = "<group>"; };
 		6571521C256989BB0035F3F1 /* Other.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Other.swift; sourceTree = "<group>"; };
+		6571522125698CA50035F3F1 /* CharacterDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterDetailTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -539,7 +539,7 @@
 		65715213256982200035F3F1 /* Character Detail screen */ = {
 			isa = PBXGroup;
 			children = (
-				65715217256982810035F3F1 /* CharacterDetailViewController.swift */,
+				6571522125698CA50035F3F1 /* CharacterDetailTableViewController.swift */,
 			);
 			path = "Character Detail screen";
 			sourceTree = "<group>";
@@ -707,6 +707,7 @@
 				6523A2B225659178009F808D /* StoryList.swift in Sources */,
 				6523A27C25658A50009F808D /* MarvelCharactersDataSource.swift in Sources */,
 				6523A29B2565911E009F808D /* Data_MarvelCharacter.swift in Sources */,
+				6571522225698CA50035F3F1 /* CharacterDetailTableViewController.swift in Sources */,
 				6523A2D025659224009F808D /* SeriesSummary.swift in Sources */,
 				6523A2AD25659166009F808D /* ComicList.swift in Sources */,
 				6523A2B72565918C009F808D /* EventList.swift in Sources */,
@@ -716,7 +717,6 @@
 				6571520C256966370035F3F1 /* CharacterListDataSource+CharactersSection.swift in Sources */,
 				6523A2CB2565920F009F808D /* EventSummary.swift in Sources */,
 				6561AB5D25668F37008E74EB /* ErrorOutput.swift in Sources */,
-				65715218256982810035F3F1 /* CharacterDetailViewController.swift in Sources */,
 				6523A296256590F8009F808D /* CharacterDataContainer.swift in Sources */,
 				6523A28325658B16009F808D /* CharacterDataWrapper.swift in Sources */,
 				6561AB652566B8D4008E74EB /* URLSessionDataTaskPublisher+MarvelValidate.swift in Sources */,

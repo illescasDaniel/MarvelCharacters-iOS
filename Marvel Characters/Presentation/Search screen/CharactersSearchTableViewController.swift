@@ -64,7 +64,7 @@ class CharactersSearchTableViewController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let character = self.dataSource.characters[indexPath.row]
-		let characterDetailVC = CharacterDetailViewController.build(withCharacter: character)
+		let characterDetailVC = CharacterDetailTableViewController.build(withCharacter: character)
 		self.presentingViewController?.navigationController?.pushViewController(characterDetailVC, animated: true)
 	}
 	
