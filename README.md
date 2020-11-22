@@ -24,9 +24,11 @@ Mini app that uses marvel characters api to display and search marvel characters
 
 ## Screenshots
 
-<img src="github/CharactersList.PNG" height="500">
-<img src="github/CharactersSearch.PNG" height="500">
-<img src="github/CharacterDetail.PNG" height="500">
+<p float="left">
+  <img src="github/CharactersList.PNG" width="300">
+  <img src="github/CharactersSearch.PNG" width="300">
+  <img src="github/CharacterDetail.PNG" width="300">
+</p>
 
 ### Credits
 - [Icons](https://icons8.com/icon/pack/cinema/color): Some icons used for the app icon.
