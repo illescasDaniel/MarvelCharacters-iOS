@@ -15,8 +15,8 @@ class CharacterDetailTableViewController: UITableViewController {
 	@IBOutlet private weak var characterDescriptionLabel: UILabel!
 	@IBOutlet private weak var characterLinksTextView: UITextView!
 	
-	private var character: MarvelCharacter!
-	private var placeholderImage: UIImage!
+	private let character: MarvelCharacter
+	private let placeholderImage: UIImage
 	
 	let dataSource = CharacterDetailDataSource()
 	
@@ -36,21 +36,16 @@ class CharacterDetailTableViewController: UITableViewController {
 		setupCharacterViews()
 	}
 	
-	static func build(withCharacter character: MarvelCharacter, placeholderImage: UIImage) -> CharacterDetailTableViewController {
-		let storyboard = UIStoryboard(name: "Main", bundle: .main)
-		let vc = storyboard.instantiateViewController(identifier: Constants.StoryboardViewControllerID.characterDetail.rawValue) as! CharacterDetailTableViewController
-		vc.setup(withCharacter: character, placeholderImage: placeholderImage)
-		return vc
-	}
-	
-	func setup(withCharacter character: MarvelCharacter, placeholderImage: UIImage) {
+	init?(coder: NSCoder, character: MarvelCharacter, placeholderImage: UIImage) {
 		self.character = character
 		self.placeholderImage = placeholderImage
+		
+		super.init(coder: coder)
 	}
 	
-//	override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-//		return false
-//	}
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented. You need to use init?(coder: NSCoder, character: MarvelCharacter, placeholderImage: UIImage)")
+	}
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		guard indexPath.section == 2 /* links */ else { return }
@@ -63,10 +58,6 @@ class CharacterDetailTableViewController: UITableViewController {
 	private func setupNavigationBar() {
 		self.title = nil
 		self.navigationItem.prompt = Other.attributionText
-		
-//		self.navigationController?.navigationBar.barTintColor = self.view.backgroundColor
-//		self.navigationController?.navigationBar.shadowImage = UIImage()
-//		self.navigationController?.navigationBar.layoutIfNeeded()
 	}
 	
 	private func setupViews() {

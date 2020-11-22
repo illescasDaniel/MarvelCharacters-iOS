@@ -11,11 +11,6 @@ class CharactersTableViewController: UITableViewController {
 	
 	let dataSource = CharactersListDataSource(charactersRepository: MarvelCharactersRepositoryImplementation())
 	
-	struct CharacterAndUIImage {
-		let character: MarvelCharacter
-		let image: UIImage?
-	}
-	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
@@ -37,6 +32,7 @@ class CharactersTableViewController: UITableViewController {
 		self.dataSource.loadData()
 		
 		let searchController = CharactersSearchTableViewController.build()
+		
 		self.navigationItem.searchController = UISearchController(searchResultsController: searchController)
 		self.navigationItem.searchController?.searchResultsUpdater = searchController
 		self.navigationItem.searchController?.definesPresentationContext = true
@@ -80,8 +76,9 @@ class CharactersTableViewController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let character = self.dataSource.characterSections[indexPath.section].characters[indexPath.row]
-		let cellImage = (tableView.cellForRow(at: indexPath) as? SearchTableViewCell)?.characterThumbnailImageView.image
-		self.performSegue(withIdentifier: Constants.SegueID.characterDetail.rawValue, sender: CharacterAndUIImage(character: character, image: cellImage))
+		let cellImage = self.dataSource.imageThumbnail(forImagePath: character.thumbnail) ??
+						Asset.bigPlaceholderImage
+		self.performSegue(withIdentifier: Constants.SegueID.characterDetail.rawValue, sender: CharacterAndUIImageForSegue(character: character, image: cellImage))
 	}
 	
 	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -89,7 +86,7 @@ class CharactersTableViewController: UITableViewController {
 		if charactersSection.characters.isEmpty {
 			return nil
 		}
-		return charactersSection.initial.displayString
+		return String(describing: charactersSection.initial)
 	}
 	
 	override func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -101,17 +98,9 @@ class CharactersTableViewController: UITableViewController {
 	
 	// MARK: - Navigation
 	
-	// In a storyboard-based application, you will often want to do a little preparation before navigation
-	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		guard let segueID = segue.identifier.flatMap(Constants.SegueID.init) else { return }
-		switch segueID {
-		case .characterDetail:
-			let characterVC = segue.destination as! CharacterDetailTableViewController
-			let characterAndImage = sender as! CharacterAndUIImage
-			let imageThumbnail = self.dataSource.imageThumbnail(forImagePath: characterAndImage.character.thumbnail)
-			let placeholderImage = imageThumbnail ?? characterAndImage.image ?? Asset.bigPlaceholderImage
-			characterVC.setup(withCharacter: characterAndImage.character, placeholderImage: placeholderImage)
-		}
+	@IBSegueAction func showCharacterDetail(_ coder: NSCoder, sender: Any?, segueIdentifier: String?) -> CharacterDetailTableViewController? {
+		let characterAndImage = sender as! CharacterAndUIImageForSegue
+		return CharacterDetailTableViewController(coder: coder, character: characterAndImage.character, placeholderImage: characterAndImage.image)
 	}
 	
 	// MARK: Actions

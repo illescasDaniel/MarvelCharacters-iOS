@@ -27,6 +27,6 @@ extension Constants {
 
 extension Constants {
 	enum StoryboardViewControllerID: String {
-		case characterDetail = "CharacterDetailViewController"
+		case characterDetail = "CharacterDetailTableViewController"
 	}
 }

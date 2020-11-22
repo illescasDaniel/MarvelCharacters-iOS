@@ -14,15 +14,6 @@ extension CharactersListDataSource {
 			case numbers
 			case a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, w, x, y, z
 			
-			var displayString: String {
-				switch self {
-				case .numbers:
-					return "0-9"
-				default:
-					return self.rawValue.uppercased()
-				}
-			}
-			
 			static var allSortedAscending: [Initial] {
 				[.numbers, .a, .b, .c, .d, .e, .f, .g, .h, .i, .j, .k, .l,
 				 .m, .n, .o, .p, .q, .r, .s, .t, .u, .w, .x, .y, .z]
@@ -35,5 +26,17 @@ extension CharactersListDataSource {
 		
 		let initial: Initial
 		var characters: [MarvelCharacter]
+	}
+}
+
+
+extension CharactersListDataSource.CharacterSection.Initial: CustomStringConvertible {
+	var description: String {
+		switch self {
+		case .numbers:
+			return "0-9"
+		default:
+			return self.rawValue.uppercased()
+		}
 	}
 }

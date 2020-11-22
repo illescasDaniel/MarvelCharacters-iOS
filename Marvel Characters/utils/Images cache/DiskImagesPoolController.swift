@@ -34,7 +34,7 @@ class DiskImagesPoolController {
 	
 	func retrieveSavedImageDataOnDiskAsync(forURLPath path: String, withImageSize imageSize: CoreGraphics.CGFloat, completionHandler: @escaping (Data?) -> Void) -> Bool {
 		let finalPath = self.filePathOnDisk(forURLPath: path, withImageSize: imageSize)
-		DispatchQueue.global(qos: .background).async {
+		DispatchQueue.global(qos: .userInteractive).async {
 			completionHandler(FileManager.default.contents(atPath: finalPath))
 		}
 		return FileManager.default.fileExists(atPath: finalPath)

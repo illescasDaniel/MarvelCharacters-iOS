@@ -64,10 +64,10 @@ class CharactersSearchTableViewController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let character = self.dataSource.characters[indexPath.row]
-		let cellImage = { (tableView.cellForRow(at: indexPath) as? SearchTableViewCell)?.characterThumbnailImageView.image }
-		let placeholderImage = self.dataSource.thumbnail(forImagePath: character.thumbnail) ?? cellImage() ?? Asset.bigPlaceholderImage
-		let characterDetailVC = CharacterDetailTableViewController.build(withCharacter: character, placeholderImage: placeholderImage)
-		self.presentingViewController?.navigationController?.pushViewController(characterDetailVC, animated: true)
+		let placeholderImage = self.dataSource.thumbnail(forImagePath: character.thumbnail) ?? Asset.bigPlaceholderImage
+		let characterDetailVC = self.presentingViewController as! CharactersTableViewController
+		let senderData = CharacterAndUIImageForSegue(character: character, image: placeholderImage)
+		characterDetailVC.performSegue(withIdentifier: Constants.SegueID.characterDetail.rawValue, sender: senderData)
 	}
 	
 	override func scrollViewDidScroll(_ scrollView: UIScrollView) {
