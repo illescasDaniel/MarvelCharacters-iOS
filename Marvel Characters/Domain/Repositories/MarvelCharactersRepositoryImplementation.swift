@@ -53,6 +53,7 @@ class MarvelCharactersRepositoryImplementation: MarvelCharactersRepository {
 			.eraseToAnyPublisher()
 	}
 	
+	/// The search is case insensitive
 	func searchCharactersPaginated(startingWith namePrefix: String, limit: Int, page: Int) -> AnyPublisher<[MarvelCharacter], Error> {
 		
 		if let cachedResponse = self.cachedSearches[CachedSearch(searchText: namePrefix, page: page)] {

@@ -234,8 +234,8 @@
 		6523A24125658A00009F808D /* Marvel Characters */ = {
 			isa = PBXGroup;
 			children = (
-				657151B4256843EE0035F3F1 /* utils */,
 				6561AB832566CF24008E74EB /* config */,
+				657151B4256843EE0035F3F1 /* utils */,
 				6523A30325659D58009F808D /* architecture */,
 				6523A27A25658A1E009F808D /* Data */,
 				6523A27925658A1A009F808D /* Domain */,

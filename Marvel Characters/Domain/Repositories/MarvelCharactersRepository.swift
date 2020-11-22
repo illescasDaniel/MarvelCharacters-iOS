@@ -14,5 +14,6 @@ protocol MarvelCharactersRepository {
 	
 	func downloadCharacterThumbnail(_ thumbnailURL: URL) -> AnyPublisher<Data, URLError>
 	func charactersSortedByNamePaginated(limit: Int, page: Int, ascending: Bool) -> AnyPublisher<[MarvelCharacter], Error>
+	/// The search is case insensitive
 	func searchCharactersPaginated(startingWith namePrefix: String, limit: Int, page: Int) -> AnyPublisher<[MarvelCharacter], Error>
 }

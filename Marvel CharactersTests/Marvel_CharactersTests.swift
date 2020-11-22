@@ -183,7 +183,7 @@ class Marvel_CharactersTests: XCTestCase {
 	
 	func testCharactersSortedByNamePaginated() {
 		
-		let testCharactersSortedByNamePaginated = expectation(description: "testCharactersSortedByNamePaginated")
+		let testCharactersSortedByNamePaginatedExpectation = expectation(description: "testCharactersSortedByNamePaginated")
 		Publishers.MergeMany(
 			repository.charactersSortedByNamePaginated(limit: 20, page: 0, ascending: true),
 			repository.charactersSortedByNamePaginated(limit: 20, page: 1, ascending: true),
@@ -198,7 +198,7 @@ class Marvel_CharactersTests: XCTestCase {
 			case .failure(let error):
 				dump(error)
 				XCTFail(error.localizedDescription)
-				testCharactersSortedByNamePaginated.fulfill()
+				testCharactersSortedByNamePaginatedExpectation.fulfill()
 			case .finished:
 				print("testCharactersSortedByNamePaginated - no issues")
 			}
@@ -206,14 +206,37 @@ class Marvel_CharactersTests: XCTestCase {
 			print(characters.count)
 			XCTAssertEqual(characters.count, 60)
 			XCTAssertEqual(Set(characters).count, characters.count)
-			testCharactersSortedByNamePaginated.fulfill()
+			testCharactersSortedByNamePaginatedExpectation.fulfill()
 		}
 		.store(in: &cancellables)
 		
-		self.wait(for: [testCharactersSortedByNamePaginated], timeout: 60)
+		self.wait(for: [testCharactersSortedByNamePaginatedExpectation], timeout: 60)
 	}
 	
 	func testSearchCharacters() {
-//		func searchCharacters(startingWith namePrefix: String) -> AnyPublisher<[MarvelCharacter], Error>
+		let testSearchCharactersExpectation = expectation(description: "testSearchCharacters")
+		
+		let namePrefix = "Spi"
+		let searchResultsLimit = 10
+		
+		let request = repository.searchCharactersPaginated(startingWith: namePrefix, limit: searchResultsLimit, page: 0)
+		request.sink { (completion) in
+			switch completion {
+			case .failure(let error):
+				dump(error)
+				XCTFail(error.localizedDescription)
+			case .finished:
+				print("testCharactersSortedByNamePaginated - no issues")
+			}
+			testSearchCharactersExpectation.fulfill()
+		} receiveValue: { (characters) in
+			XCTAssertLessThanOrEqual(characters.count, searchResultsLimit)
+			for character in characters {
+				XCTAssertTrue(character.name.uppercased().starts(with: namePrefix.uppercased()))
+			}
+		}
+		.store(in: &cancellables)
+
+		self.wait(for: [testSearchCharactersExpectation], timeout: 60)
 	}
 }

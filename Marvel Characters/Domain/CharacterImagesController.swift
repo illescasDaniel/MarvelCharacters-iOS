@@ -119,16 +119,6 @@ class CharacterImagesController {
 			if let commonCachedImage = CommonImagesPoolController.shared.retrieveImage(forURLPath: path, forImageSize: self.imagesSize) {
 				return commonCachedImage
 			}
-//			if let imageDataFromDisk = DiskImagesPoolController.shared.retrieveSavedImageDataOnDisk(forURLPath: path, withImageSize: self.imagesSize),
-//			   let image = UIImage(data: imageDataFromDisk)?.resizeImage(self.imagesSize, opaque: true, contentMode: .scaleAspectFill) {
-//				
-//				self.locker.lock()
-//				defer { self.locker.unlock() }
-//				print("Using image data from disk (sync)")
-//				self.cachedImageForThumbnailURL[thumbnailURL] = image
-//				CommonImagesPoolController.shared.save(image: image, forURLPath: path, withImageSize: self.imagesSize)
-//				return image
-//			}
 		}
 		return nil
 	}
