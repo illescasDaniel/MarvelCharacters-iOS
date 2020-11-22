@@ -44,6 +44,8 @@ class CharactersListDataSource {
 	private var paginatedCancellables: [Int: AnyCancellable] = [:]
 	private var cancellables: [AnyCancellable] = []
 	
+	private let changeOrderPublisher = PassthroughSubject<(), Never>()
+	
 	private let marvelImageThumbnailQuality: MarvelImage.ThumbnailQuality = {
 		switch UIScreen.main.scale {
 		case 1:
@@ -57,6 +59,7 @@ class CharactersListDataSource {
 		self.charactersRepository = charactersRepository
 		self.charactersOrder = .ascending
 		setupSections()
+		setupChangeOrderPublisher()
 		setupImageLoading()
 	}
 	
@@ -70,16 +73,7 @@ class CharactersListDataSource {
 	}
 	
 	func changeOrder() {
-		cancelRequests()
-		characterImagesController.cancelRequests()
-		characterImagesController.cleanImagesByIndexPath()
-		self.charactersCount = 0
-		self.page = 0
-		self.charactersOrder.toggle()
-		setupSections()
-		self.delegate?.reloadList()
-		setupImageLoading()
-		loadData()
+		changeOrderPublisher.send()
 	}
 	
 	func loadData() {
@@ -123,7 +117,7 @@ class CharactersListDataSource {
 				}
 			}
 			
-			if !characters.isEmpty {
+			if characters.count == Constants.charactersListPageSize {
 				self.page += 1
 			}
 			
@@ -163,6 +157,27 @@ class CharactersListDataSource {
 	}
 	
 	// MARK: Convenience
+	
+	private func setupChangeOrderPublisher() {
+		self.changeOrderPublisher
+			.throttle(for: .seconds(1), scheduler: DispatchQueue.main, latest: true)
+			.sink { self._changeOrder() }
+			.store(in: &cancellables)
+	}
+	
+	private func _changeOrder() {
+		cancelRequests()
+		characterImagesController.cancelRequests()
+		characterImagesController.cleanImagesByIndexPath()
+		self.charactersCount = 0
+		self.page = 0
+		self.charactersOrder.toggle()
+		setupSections()
+		self.delegate?.reloadList()
+		setupChangeOrderPublisher()
+		setupImageLoading()
+		loadData()
+	}
 	
 	private func setupImageLoading() {
 		let imagesControllerPublisher = self.characterImagesController.publisher.collect(.byTimeOrCount(DispatchQueue.main, .milliseconds(500), 10))
