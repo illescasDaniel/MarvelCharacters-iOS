@@ -188,7 +188,7 @@ class CharactersListDiffableDataSource: UITableViewDiffableDataSource<CharacterS
 	private func setupChangeListOrder() {
 		changeListOrderPublisher
 			.throttle(for: .seconds(1), scheduler: DispatchQueue.main, latest: true)
-			.sink { self.changeOrder() }
+			.sink { self._changeOrder() }
 			.store(in: &cancellables)
 	}
 	
