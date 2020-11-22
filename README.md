@@ -14,8 +14,8 @@ Mini app that uses marvel characters api to display and search marvel characters
 ## Installation [IMPORTANT]
 
 - This app uses the official marvel api: https://developer.marvel.com/docs
-- To setup the project, you need to get the marvel api developer keys.
-  - Then you need to place them into **"Marvel Characters/config/Keys.example.xcconfig"**.
+- To setup the project, **you need to get the marvel api developer keys AND add "\*" in "Your authorized referrers" (https://developer.marvel.com/account)**.
+  - Then you need look at this file **"Marvel Characters/config/Keys.example.xcconfig"**. Copy its contents replacing the api keys with yours and create a new file on the same folder named "Keys.xcconfig". The project should automatically pick up that file and use your api keys.
 - There is only one external dependency, ZippyJSON, but is should load automatically with the Swift Package Manager
 
 ## Extra
