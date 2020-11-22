@@ -161,7 +161,6 @@ class CharactersListDiffableDataSource: UITableViewDiffableDataSource<CharacterS
 	private func _changeOrder() {
 		cancelRequests()
 		characterImagesController.cancelRequests()
-		characterImagesController.cleanImagesByIndexPath()
 		var snapshot = self.snapshot()
 		snapshot.deleteAllItems()
 		switch self.charactersOrder {
@@ -205,15 +204,14 @@ class CharactersListDiffableDataSource: UITableViewDiffableDataSource<CharacterS
 	
 	private func setupImageLoading() {
 		
-		let imagesControllerPublisher = self.characterImagesController.charactersPublisher
-			.removeDuplicates()
-			.collect(.byTimeOrCount(DispatchQueue.main, .milliseconds(500), 10))
+		let imagesControllerPublisher = self.characterImagesController.charactersPublisher.collect(.byTimeOrCount(DispatchQueue.global(qos: .userInteractive), .seconds(1), 20))//.collect(.byTime(DispatchQueue.global(qos: .userInteractive), .milliseconds(300)))
 		
-		imagesControllerPublisher.receive(on: DispatchQueue.main).sink { (charactersToReload) in
-			let marvelCharacters: [MarvelCharacter] = Array(Set(charactersToReload))
+		imagesControllerPublisher.map({ Array(Set($0)) }).sink { (charactersToReload) in
 			var currentSnapshot = self.snapshot()
-			currentSnapshot.reloadItems(marvelCharacters)
-			self.apply(currentSnapshot)
+			currentSnapshot.reloadItems(charactersToReload)
+			DispatchQueue.main.async {
+				self.apply(currentSnapshot)
+			}
 		}
 		.store(in: &cancellables)
 	}
