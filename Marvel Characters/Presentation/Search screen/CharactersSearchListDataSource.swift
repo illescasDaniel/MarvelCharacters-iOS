@@ -116,8 +116,8 @@ class CharactersSearchListDataSource {
 	
 	private func setupImageLoading() {
 		let imagesControllerPublisher = self.characterImagesController.publisher.collect(.byTime(DispatchQueue.main, .milliseconds(300)))
-		self.cancellables.append(imagesControllerPublisher.receive(on: DispatchQueue.main).sink { (indexPathsToDelete) in
-			self.delegate?.reloadRows(at: indexPathsToDelete)
+		self.cancellables.append(imagesControllerPublisher.receive(on: DispatchQueue.main).sink { (indexPathsToReload) in
+			self.delegate?.reloadRows(at: indexPathsToReload)
 		})
 	}
 	

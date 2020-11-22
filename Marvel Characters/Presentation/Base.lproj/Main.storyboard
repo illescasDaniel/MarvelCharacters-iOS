@@ -83,7 +83,7 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Character Info" id="cSD-vj-cnu">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="tSJ-9B-2dj" detailTextLabel="E2X-bl-Han" style="IBUITableViewCellStyleSubtitle" id="hna-1A-bEy">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="tSJ-9B-2dj" detailTextLabel="E2X-bl-Han" style="IBUITableViewCellStyleSubtitle" id="hna-1A-bEy">
                                         <rect key="frame" x="20" y="231" width="374" height="59"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="hna-1A-bEy" id="eh3-xP-aDP">
@@ -107,7 +107,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="jwn-xg-0cB" detailTextLabel="3co-zu-hMg" style="IBUITableViewCellStyleSubtitle" id="AwV-kl-esz">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="jwn-xg-0cB" detailTextLabel="3co-zu-hMg" style="IBUITableViewCellStyleSubtitle" id="AwV-kl-esz">
                                         <rect key="frame" x="20" y="290" width="374" height="59"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="AwV-kl-esz" id="deJ-pm-izd">

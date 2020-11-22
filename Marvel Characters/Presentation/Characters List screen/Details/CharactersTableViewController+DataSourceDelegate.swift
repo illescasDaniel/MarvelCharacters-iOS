@@ -8,22 +8,7 @@
 import UIKit
 
 extension CharactersTableViewController: CharactersListDataSourceDelegate {
-	
-	func reloadList() {
-		self.tableView.reloadData()
-		if !Other.attributionText.isEmpty && Other.attributionText != self.navigationItem.prompt {
-			self.navigationItem.prompt = Other.attributionText
-		}
-	}
-	
-	func reloadRow(index: Int) {
-		self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-	}
-	
-	func reloadRows(at indexPaths: [IndexPath]) {
-		self.tableView.reloadRows(at: indexPaths, with: .none)
-	}
-	
+
 	func errorLoading(_ error: Error) {
 		dump(error)
 		
@@ -50,6 +35,9 @@ extension CharactersTableViewController: CharactersListDataSourceDelegate {
 	func didFinishLoading() {
 		if let activityIndicator = self.navigationItem.leftBarButtonItem?.customView as? UIActivityIndicatorView {
 			activityIndicator.stopAnimating()
+		}
+		if !Other.attributionText.isEmpty && Other.attributionText != self.navigationItem.prompt {
+			self.navigationItem.prompt = Other.attributionText
 		}
 	}
 }

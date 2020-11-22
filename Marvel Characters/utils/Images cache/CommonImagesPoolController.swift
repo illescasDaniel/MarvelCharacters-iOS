@@ -13,8 +13,11 @@ class CommonImagesPoolController {
 	private var commonImagesPool: [String: [UIImage]] = [:]
 	
 	static let shared = CommonImagesPoolController()
+	private let locker = NSLock()
 	
 	func save(image: UIImage, forURLPath path: String, withImageSize imageSize: CoreGraphics.CGFloat) {
+		locker.lock()
+		defer { locker.unlock() }
 		if let cachedImagesForURL = self.commonImagesPool[path] {
 			if !cachedImagesForURL.contains(where: { $0.size.width == imageSize }) {
 				self.commonImagesPool[path] = cachedImagesForURL + [image]

@@ -9,7 +9,11 @@ import UIKit
 
 class CharactersTableViewController: UITableViewController {
 	
-	let dataSource = CharactersListDataSource(charactersRepository: MarvelCharactersRepositoryImplementation())
+	lazy var dataSource: CharactersListDiffableDataSource = .init(
+		charactersRepository: MarvelCharactersRepositoryImplementation(),
+		tableView: self.tableView,
+		cellProvider: self.cellForRow
+	)
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -20,74 +24,61 @@ class CharactersTableViewController: UITableViewController {
 		// Uncomment the following line to display an Edit button in the navigation bar for this view controller.
 		// self.navigationItem.rightBarButtonItem = self.editButtonItem
 		
+		setupNavigationItem()
+		self.tableView.register(UINib(nibName: "CharacterTableViewCell", bundle: .main), forCellReuseIdentifier: "characterCell")
 		self.dataSource.delegate = self
+		self.dataSource.loadData()
+	}
+	
+	private func setupNavigationItem() {
 		
 		self.title = NSLocalizedString("Marvel Characters", comment: "App title, used in main screen as its title")
 		self.navigationItem.prompt = Other.attributionText
 		self.navigationItem.largeTitleDisplayMode = .always
 		self.navigationController?.navigationBar.prefersLargeTitles = true
 		
-		self.tableView.register(UINib(nibName: "CharacterTableViewCell", bundle: .main), forCellReuseIdentifier: "characterCell")
-		
-		self.dataSource.loadData()
-		
 		let searchController = CharactersSearchTableViewController.build()
-		
 		self.navigationItem.searchController = UISearchController(searchResultsController: searchController)
 		self.navigationItem.searchController?.searchResultsUpdater = searchController
 		self.navigationItem.searchController?.definesPresentationContext = true
 	}
 	
-	// MARK: - Table view data source
+	// MARK: - Table view data source setup
 	
-	override func numberOfSections(in tableView: UITableView) -> Int {
-		return self.dataSource.characterSections.count
-	}
-	
-	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return self.dataSource.characterSections[section].characters.count
-	}
-	
-	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		
-		let cell = tableView.dequeueReusableCell(withIdentifier: "characterCell", for: indexPath) as! CharacterTableViewCell
+	private func cellForRow(in tableView: UITableView, atIndexPath indexPath: IndexPath, with character: MarvelCharacter) -> CharacterTableViewCell? {
+		guard let cell = tableView.dequeueReusableCell(withIdentifier: "characterCell", for: indexPath) as? CharacterTableViewCell else { return nil }
 
-		let character = self.dataSource.characterSections[indexPath.section].characters[indexPath.row]
-		
 		cell.characterNameLabel.text = character.name
-		
+
 		if character.description.isEmpty {
 			cell.characterDescriptionLabel.text = nil
 			cell.characterDescriptionLabel.isHidden = true
 		} else {
+			let descriptionLimit = 300
 			cell.characterDescriptionLabel.isHidden = false
-			cell.characterDescriptionLabel.text = self.view.frame.width > 1200 ? String(character.description.prefix(500)) : String(character.description.prefix(300))
+			cell.characterDescriptionLabel.text = character.description.count > descriptionLimit ? String(character.description.prefix(300))+"..." : character.description
 		}
-		
-		if let thumbnail = self.dataSource.imageThumbnail(forImagePath: character.thumbnail) {
+
+		if let thumbnail = self.dataSource.thumbnail(forCharacter: character) {
 			cell.characterThumbnailImageView.image = thumbnail
 		} else {
 			cell.characterThumbnailImageView.image = Asset.placeholderImage
-			self.dataSource.downloadThumbnail(character.thumbnail, forIndexPath: indexPath)
+			self.dataSource.downloadThumbnail(forCharacter: character)
 		}
-		
+
 		return cell
 	}
 	
+	// MARK: - Table view delegate
+	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let character = self.dataSource.characterSections[indexPath.section].characters[indexPath.row]
-		let cellImage = self.dataSource.imageThumbnail(forImagePath: character.thumbnail) ??
+		let character = self.dataSource.itemIdentifier(for: indexPath)!
+		let cellImage = self.dataSource.thumbnail(forCharacter: character) ??
 						Asset.bigPlaceholderImage
 		self.performSegue(withIdentifier: Constants.SegueID.characterDetail.rawValue, sender: CharacterAndUIImageForSegue(character: character, image: cellImage))
 	}
-	
-	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		let charactersSection = self.dataSource.characterSections[section]
-		if charactersSection.characters.isEmpty {
-			return nil
-		}
-		return String(describing: charactersSection.initial)
-	}
+
+	// MARK: Scrollview delegate
 	
 	override func scrollViewDidScroll(_ scrollView: UIScrollView) {
 		// reached bottom
