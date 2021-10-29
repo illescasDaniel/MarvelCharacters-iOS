@@ -5,10 +5,8 @@
 //  Created by Daniel Illescas Romero on 19/11/20.
 //
 
-// Configuration settings file format documentation can be found at:
-// https://help.apple.com/xcode/#/dev745c5c974
-
-// TODO: use your own api keys here and rename the file to "Keys.xcconfig"
+// Copy the contents of this file to a new one named "Keys.xcconfig" and use the correct api keys.
+// OR simply use the script "set_up_keys.sh"
 
 MARVEL_PUBLIC_API_KEY = "INVALID"
 MARVEL_PRIVATE_API_KEY = "INVALID"

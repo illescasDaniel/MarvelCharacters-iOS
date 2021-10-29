@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import class UIKit.UIImage
 
-protocol CharactersDetailDataSourceDelegate: class {
+protocol CharactersDetailDataSourceDelegate: AnyObject {
 	func didLoadCharacterImage(_ image: UIImage)
 	func errorLoadingImage(_ error: Error)
 }

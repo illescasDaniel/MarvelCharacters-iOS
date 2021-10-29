@@ -10,7 +10,7 @@ import Combine
 import class UIKit.UIImage
 import class UIKit.UIScreen
 
-protocol CharactersSearchListDataSourceDelegate: class {
+protocol CharactersSearchListDataSourceDelegate: AnyObject {
 	func reloadSearchListResults()
 	func reloadRows(at indexPaths: [IndexPath])
 	func errorWithSearchResults(_ error: Error)

@@ -76,6 +76,8 @@
 		6571520C256966370035F3F1 /* CharacterListDataSource+CharactersSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6571520B256966370035F3F1 /* CharacterListDataSource+CharactersSection.swift */; };
 		6571521D256989BB0035F3F1 /* Other.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6571521C256989BB0035F3F1 /* Other.swift */; };
 		6571522225698CA50035F3F1 /* CharacterDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6571522125698CA50035F3F1 /* CharacterDetailTableViewController.swift */; };
+		6577452E272C2BC7009B202F /* Keys.example.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 6577452D272C2BC7009B202F /* Keys.example.xcconfig */; };
+		65774530272C2D2C009B202F /* Keys.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 6577452F272C2D2C009B202F /* Keys.xcconfig */; };
 		65E9A3822569A3620016C0C9 /* CharacterDetailDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E9A3812569A3620016C0C9 /* CharacterDetailDataSource.swift */; };
 		65E9A3882569A5580016C0C9 /* CharacterDetailTableViewController+DataSourceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E9A3872569A5580016C0C9 /* CharacterDetailTableViewController+DataSourceDelegate.swift */; };
 		65E9A3902569C47F0016C0C9 /* SRCopyableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E9A38F2569C47F0016C0C9 /* SRCopyableLabel.swift */; };
@@ -142,13 +144,11 @@
 		6561AB5C25668F37008E74EB /* ErrorOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorOutput.swift; sourceTree = "<group>"; };
 		6561AB642566B8D4008E74EB /* URLSessionDataTaskPublisher+MarvelValidate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSessionDataTaskPublisher+MarvelValidate.swift"; sourceTree = "<group>"; };
 		6561AB6A2566C7BA008E74EB /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
-		6561AB7F2566CEB2008E74EB /* Keys.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Keys.xcconfig; sourceTree = "<group>"; };
 		6561AB872566CF4B008E74EB /* Marvel Characters-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Marvel Characters-Bridging-Header.h"; sourceTree = "<group>"; };
 		6561ABB22566DAE4008E74EB /* MarvelCharacter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelCharacter.swift; sourceTree = "<group>"; };
 		6561ABB82566DB42008E74EB /* MarvelCharacterModelMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelCharacterModelMapper.swift; sourceTree = "<group>"; };
 		6561ABC12566DCD7008E74EB /* MarvelCharactersRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelCharactersRepository.swift; sourceTree = "<group>"; };
 		6561ABC92566DCE2008E74EB /* MarvelCharactersRepositoryImplementation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarvelCharactersRepositoryImplementation.swift; sourceTree = "<group>"; };
-		6561ABCE2566E555008E74EB /* Keys.example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Keys.example.xcconfig; sourceTree = "<group>"; };
 		6561ABCF2566F48E008E74EB /* Keys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Keys.h; sourceTree = "<group>"; };
 		6561ABD02566F48E008E74EB /* Keys.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Keys.m; sourceTree = "<group>"; };
 		6561ABD525681338008E74EB /* CharactersTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharactersTableViewController.swift; sourceTree = "<group>"; };
@@ -179,6 +179,8 @@
 		6571520B256966370035F3F1 /* CharacterListDataSource+CharactersSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CharacterListDataSource+CharactersSection.swift"; sourceTree = "<group>"; };
 		6571521C256989BB0035F3F1 /* Other.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Other.swift; sourceTree = "<group>"; };
 		6571522125698CA50035F3F1 /* CharacterDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterDetailTableViewController.swift; sourceTree = "<group>"; };
+		6577452D272C2BC7009B202F /* Keys.example.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Keys.example.xcconfig; sourceTree = "<group>"; };
+		6577452F272C2D2C009B202F /* Keys.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Keys.xcconfig; sourceTree = "<group>"; };
 		65E9A3812569A3620016C0C9 /* CharacterDetailDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterDetailDataSource.swift; sourceTree = "<group>"; };
 		65E9A3872569A5580016C0C9 /* CharacterDetailTableViewController+DataSourceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CharacterDetailTableViewController+DataSourceDelegate.swift"; sourceTree = "<group>"; };
 		65E9A38F2569C47F0016C0C9 /* SRCopyableLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRCopyableLabel.swift; sourceTree = "<group>"; };
@@ -424,8 +426,8 @@
 		6561AB832566CF24008E74EB /* config */ = {
 			isa = PBXGroup;
 			children = (
-				6561AB7F2566CEB2008E74EB /* Keys.xcconfig */,
-				6561ABCE2566E555008E74EB /* Keys.example.xcconfig */,
+				6577452F272C2D2C009B202F /* Keys.xcconfig */,
+				6577452D272C2BC7009B202F /* Keys.example.xcconfig */,
 				6561AB6A2566C7BA008E74EB /* Config.xcconfig */,
 				6561AB872566CF4B008E74EB /* Marvel Characters-Bridging-Header.h */,
 				6561ABCF2566F48E008E74EB /* Keys.h */,
@@ -674,7 +676,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6577452E272C2BC7009B202F /* Keys.example.xcconfig in Resources */,
 				6523A24F25658A01009F808D /* LaunchScreen.storyboard in Resources */,
+				65774530272C2D2C009B202F /* Keys.xcconfig in Resources */,
 				6561ABEA2568148B008E74EB /* CharactersSearchTableViewController.xib in Resources */,
 				6523A24C25658A01009F808D /* Assets.xcassets in Resources */,
 				6561AC0F25682631008E74EB /* CharacterTableViewCell.xib in Resources */,

@@ -10,7 +10,7 @@ import Combine
 import class UIKit.UIImage
 import class UIKit.UIScreen
 
-protocol CharactersListDataSourceDelegate: class {
+protocol CharactersListDataSourceDelegate: AnyObject {
 	func reloadList()
 	func reloadRow(index: Int)
 	func reloadRows(at indexPaths: [IndexPath])
